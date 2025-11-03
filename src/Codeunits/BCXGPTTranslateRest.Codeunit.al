@@ -1,5 +1,10 @@
 codeunit 78602 "BCX GPT Translate Rest"
 {
+    Permissions =
+        tabledata "BCX Gen. Translation Term" = r,
+        tabledata "BCX Translation Setup" = r,
+        tabledata "BCX Translation Term" = r;
+
     procedure SendHttpRequestWithAuth(HttpMethod: Text[10]; Url: Text; Payload: Text; ContentType: Text; HeaderName: Text; HeaderValue: Text; var ResponseHttpResponseMessage: HttpResponseMessage)
     var
         RequestHttpClient: HttpClient;

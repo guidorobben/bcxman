@@ -1,8 +1,16 @@
 codeunit 78604 "BCX Project Importer"
 {
+    Permissions =
+        tabledata "BCX Base Translation Notes" = rd,
+        tabledata "BCX Base Translation Target" = rd,
+        tabledata "BCX Target Language" = rid,
+        tabledata "BCX Translation Note" = rd,
+        tabledata "BCX Translation Project" = rm,
+        tabledata "BCX Translation Source" = rd,
+        tabledata "BCX Translation Target" = rd,
+        tabledata "BCX Translation Term" = rd,
+        tabledata Language = r;
     SingleInstance = false;
-
-
 
     procedure ImportFromZip(ProjectCode: Code[20]; SourceLangIso: Text[10]; Overwrite: Boolean)
     var

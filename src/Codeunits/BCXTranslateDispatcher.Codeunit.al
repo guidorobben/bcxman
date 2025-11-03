@@ -1,5 +1,8 @@
 codeunit 78603 "BCX Translate Dispatcher"
 {
+    Permissions =
+        tabledata "BCX Translation Setup" = r;
+
     var
         CachedBCXTranslationSetup: Record "BCX Translation Setup";
         SetupLoaded: Boolean;

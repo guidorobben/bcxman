@@ -5,6 +5,10 @@ xmlport 78601 "BCX Export Translation Target"
     Direction = Export;
     Encoding = UTF8;
     Format = Xml;
+    Permissions =
+        tabledata "BCX Translation Note" = r,
+        tabledata "BCX Translation Project" = r,
+        tabledata "BCX Translation Target" = r;
     PreserveWhiteSpace = true;
     UseDefaultNamespace = true;
     UseRequestPage = false;
@@ -109,7 +113,7 @@ xmlport 78601 "BCX Export Translation Target"
                                 fieldattribute(from; note.From) { }
                                 fieldattribute(annotates; note.Annotates) { }
                                 fieldattribute(priority; note.Priority) { }
-                                fieldattribute(note; Note.Note) { }
+                                fieldattribute(note; note.Note) { }
                             }
 
                         }

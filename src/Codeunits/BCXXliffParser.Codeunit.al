@@ -1,5 +1,13 @@
 codeunit 78605 "BCX Xliff Parser"
 {
+    Permissions =
+        tabledata "BCX Base Translation Notes" = rim,
+        tabledata "BCX Base Translation Target" = rim,
+        tabledata "BCX Translation Note" = rim,
+        tabledata "BCX Translation Project" = rm,
+        tabledata "BCX Translation Source" = rim,
+        tabledata "BCX Translation Target" = rim,
+        tabledata Language = R;
 
     // Public entry points for the three import types the XMLPorts used to handle
     procedure ImportSourceFromStream(ProjectCode: Code[20]; FileName: Text; var InS: InStream)
@@ -24,8 +32,8 @@ codeunit 78605 "BCX Xliff Parser"
         BCXTranslationNote: Record "BCX Translation Note";
         BCXTranslationProject: Record "BCX Translation Project";
         BCXTranslationSource: Record "BCX Translation Source";
-        ExistingBCXTranslationTarget: Record "BCX Translation Target";
         BCXTranslationTarget: Record "BCX Translation Target";
+        ExistingBCXTranslationTarget: Record "BCX Translation Target";
         RecTargetLanguage: Record Language;
         BCXXMLHelper: Codeunit "BCX XML Helper";
 

@@ -351,8 +351,8 @@ page 78603 "BCX Translation Target List"
         BCXTargetLanguage: Record "BCX Target Language";
         BCXTranslationSetup: Record "BCX Translation Setup";
         BCXTranslationSource: Record "BCX Translation Source";
-        ExistingBCXTranslationTarget: Record "BCX Translation Target";
         BCXTranslationTarget: Record "BCX Translation Target";
+        ExistingBCXTranslationTarget: Record "BCX Translation Target";
     begin
         BCXTranslationSetup.Get();
         ShowTranslate := BCXTranslationSetup."Use Free Google Translate" or BCXTranslationSetup."Use OpenAI" or BCXTranslationSetup."Use DeepL";

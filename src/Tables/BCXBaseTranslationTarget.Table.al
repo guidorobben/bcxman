@@ -72,8 +72,8 @@ table 78610 "BCX Base Translation Target"
         field(130; Occurrencies; Integer)
         {
             CalcFormula = count("BCX Translation Target" where(Source = field(Source)));
-            Editable = false;
             Caption = 'Occurrencies';
+            Editable = false;
             FieldClass = FlowField;
         }
         field(140; "Field Name"; Text[2048])

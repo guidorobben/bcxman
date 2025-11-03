@@ -1,6 +1,8 @@
 codeunit 78607 "BCX DeepL Translate"
 {
     Access = Internal;
+    Permissions =
+        tabledata "BCX Translation Setup" = r;
 
     procedure Translate(ProjectCode: Text[20]; inSourceLang: Text[10]; inTargetLang: Text[10]; inText: Text[2048]) outTransText: Text[2048]
     var
