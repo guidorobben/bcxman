@@ -4,18 +4,18 @@ codeunit 78601 "BCX Install Translations"
 
     trigger OnInstallAppPerCompany()
     var
-        UserPersonalization: Record "User Personalization";
         User: Record User;
+        UserPersonalization: Record "User Personalization";
     begin
         if User.FindSet() then
             repeat
                 UserPersonalization.SetRange("User ID", User."User Name");
-                if not UserPersonalization.IsEmpty then 
+                if not UserPersonalization.IsEmpty then
                     if UserPersonalization.FindSet() then
                         repeat
                             UserPersonalization.Validate("Profile ID", 'BCX Translation');
                             UserPersonalization.Modify();
                         until UserPersonalization.Next() = 0;
-            until user.Next() = 0;
-   end;
+            until User.Next() = 0;
+    end;
 }

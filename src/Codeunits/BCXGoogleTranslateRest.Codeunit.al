@@ -15,7 +15,7 @@ codeunit 78600 "BCX Google Translate Rest"
         exit(TranslatedText);
     end;
 
-    procedure Translate(ProjectCode: Text[20]; inSourceLang: Text[10]; inTargetLang: Text[10]; inText: Text[2048]) outTransText: text[2048]
+    procedure Translate(ProjectCode: Text[20]; inSourceLang: Text[10]; inTargetLang: Text[10]; inText: Text[2048]) outTransText: Text[2048]
     var
         EndPoint: Text;
         PreparedText: Text;
@@ -32,7 +32,7 @@ codeunit 78600 "BCX Google Translate Rest"
         if not HttpClient.Get(EndPoint, ResponseMessage) then
             Error('The call to the web service failed.');
         if not ResponseMessage.IsSuccessStatusCode then
-            error('The web service returned an error message:\\' + 'Status code: %1\' + 'Description: %2', ResponseMessage.HttpStatusCode, ResponseMessage.ReasonPhrase);
+            Error('The web service returned an error message:\\' + 'Status code: %1\' + 'Description: %2', ResponseMessage.HttpStatusCode, ResponseMessage.ReasonPhrase);
         ResponseMessage.Content.ReadAs(TransText);
 
         TranslatedText := GetLines(TransText);
@@ -42,12 +42,12 @@ codeunit 78600 "BCX Google Translate Rest"
 
     local procedure GetLines(inTxt: Text): Text
     var
-        JsonTok: JsonToken;
-        JsonArr: JsonArray;
-        OuterTok: JsonToken;
-        InnerArr: JsonArray;
-        InnerTok: JsonToken;
         DeepArr: JsonArray;
+        InnerArr: JsonArray;
+        JsonArr: JsonArray;
+        InnerTok: JsonToken;
+        JsonTok: JsonToken;
+        OuterTok: JsonToken;
         ValueTok: JsonToken;
         Value: Text;
     begin
@@ -79,5 +79,5 @@ codeunit 78600 "BCX Google Translate Rest"
     var
         HttpClient: HttpClient;
         ResponseMessage: HttpResponseMessage;
-        TransText: text;
+        TransText: Text;
 }

@@ -1,43 +1,43 @@
 table 78603 "BCX Target Language"
 {
-    DataClassification = SystemMetadata;
     Caption = 'Target Language';
     DataCaptionFields = "Project Code", "Target Language";
+    DataClassification = SystemMetadata;
 
     fields
     {
-        field(10; "Project Code"; code[20])
+        field(10; "Project Code"; Code[20])
         {
-            DataClassification = AccountData;
             Caption = 'Project Code';
-            TableRelation = "BCX Translation Project";
+            DataClassification = AccountData;
             Editable = false;
+            TableRelation = "BCX Translation Project";
         }
         field(20; "Project Name"; Text[100])
         {
-            Caption = 'Project Name';
-            FieldClass = FlowField;
             CalcFormula = lookup("BCX Translation Project"."Project Name" where("Project Code" = field("Project Code")));
+            Caption = 'Project Name';
             Editable = false;
+            FieldClass = FlowField;
         }
 
         field(30; "Source Language"; Code[10])
         {
-            DataClassification = AccountData;
             Caption = 'Source Language';
-            TableRelation = Language;
+            DataClassification = AccountData;
             Editable = false;
+            TableRelation = Language;
         }
         field(35; "Source Language ISO code"; Text[10])
         {
-            DataClassification = AccountData;
             Caption = 'Source Language ISO code';
+            DataClassification = AccountData;
             Editable = false;
         }
         field(40; "Target Language"; Code[10])
         {
-            DataClassification = AccountData;
             Caption = 'Target Language';
+            DataClassification = AccountData;
             TableRelation = Language;
             trigger OnValidate()
             var
@@ -47,24 +47,24 @@ table 78603 "BCX Target Language"
                     Language.TestField("BCX ISO code");
                     "Target Language ISO code" := Language."BCX ISO code"
                 end else
-                    clear("Target Language ISO code");
+                    Clear("Target Language ISO code");
             end;
         }
         field(45; "Target Language ISO code"; Text[10])
         {
-            DataClassification = AccountData;
             Caption = 'Target Language ISO code';
+            DataClassification = AccountData;
             Editable = false;
         }
         field(50; "File Name"; Text[250])
         {
-            DataClassification = SystemMetadata;
             Caption = 'File Name';
+            DataClassification = SystemMetadata;
         }
         field(60; "Equivalent Language"; Code[10])
         {
-            DataClassification = AccountData;
             Caption = 'Equivalent Language';
+            DataClassification = AccountData;
             TableRelation = Language;
             trigger OnValidate()
             var
@@ -74,13 +74,13 @@ table 78603 "BCX Target Language"
                     Language.TestField("BCX ISO code");
                     "Equivalent Language ISO code" := Language."BCX ISO code"
                 end else
-                    clear("Equivalent Language ISO code");
+                    Clear("Equivalent Language ISO code");
             end;
         }
         field(65; "Equivalent Language ISO code"; Text[10])
         {
-            DataClassification = AccountData;
             Caption = 'Equivalent Language ISO code';
+            DataClassification = AccountData;
             Editable = false;
         }
     }

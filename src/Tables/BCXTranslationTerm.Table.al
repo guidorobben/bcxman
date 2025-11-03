@@ -1,42 +1,42 @@
 table 78605 "BCX Translation Term"
 {
     Caption = 'Translation Term';
-    DataClassification = AccountData;
     DataCaptionFields = "Project Code", "Target Language";
+    DataClassification = AccountData;
 
     fields
     {
-        field(10; "Project Code"; code[10])
+        field(10; "Project Code"; Code[10])
         {
-            DataClassification = AccountData;
             Caption = 'Project Code';
+            DataClassification = AccountData;
             Editable = false;
         }
-        field(20; "Target Language"; code[10])
+        field(20; "Target Language"; Code[10])
         {
-            DataClassification = AccountData;
             Caption = 'Target Language';
+            DataClassification = AccountData;
             Editable = false;
         }
         field(30; "Line No."; Integer)
         {
-            DataClassification = AccountData;
             Caption = 'Line No.';
+            DataClassification = AccountData;
         }
         field(40; Term; Text[250])
         {
-            DataClassification = AccountData;
             Caption = 'Term';
+            DataClassification = AccountData;
         }
         field(50; Translation; Text[250])
         {
-            DataClassification = AccountData;
             Caption = 'Translation';
+            DataClassification = AccountData;
         }
         field(60; "Apply Pre-Translation"; Boolean)
         {
-            DataClassification = AccountData;
             Caption = 'Apply Pre-Translation';
+            DataClassification = AccountData;
         }
     }
 

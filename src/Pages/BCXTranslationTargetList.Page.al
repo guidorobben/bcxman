@@ -2,10 +2,10 @@
 page 78603 "BCX Translation Target List"
 {
     Caption = 'Translation Target List';
-    PageType = List;
-    SourceTable = "BCX Translation Target";
-    PopulateAllFields = true;
     DataCaptionFields = "Project Code", "Target Language ISO code";
+    PageType = List;
+    PopulateAllFields = true;
+    SourceTable = "BCX Translation Target";
 
     layout
     {
@@ -15,33 +15,33 @@ page 78603 "BCX Translation Target List"
             {
                 field("Field Name"; Rec."Field Name")
                 {
-                    ToolTip = 'The name of the field to be translated.';
                     ApplicationArea = All;
+                    ToolTip = 'The name of the field to be translated.';
 
                 }
                 field("Trans-Unit Id"; Rec."Trans-Unit Id")
                 {
-                    ToolTip = 'The unique identifier for the translation unit.';
                     ApplicationArea = All;
+                    ToolTip = 'The unique identifier for the translation unit.';
                     Visible = false;
 
                 }
 
                 field(Source; Rec.Source)
                 {
-                    ToolTip = 'The original text that needs to be translated.';
                     ApplicationArea = All;
+                    ToolTip = 'The original text that needs to be translated.';
                 }
                 field("Target Language ISO code"; Rec."Target Language ISO code")
                 {
+                    ApplicationArea = All;
                     ToolTip = 'The ISO code for the target language.';
                     Visible = ShowTargetLanguageCode;
-                    ApplicationArea = All;
                 }
                 field(Translate2; Rec.Translate)
                 {
-                    Caption = 'Translate';
                     ApplicationArea = All;
+                    Caption = 'Translate';
                     ToolTip = 'Set the Translate field to no if you don''t want it to be translated';
                 }
                 field(Target; Rec.Target)
@@ -56,27 +56,27 @@ page 78603 "BCX Translation Target List"
                 }
                 field(Occurrencies; Rec.Occurrencies)
                 {
+                    ApplicationArea = All;
                     Caption = 'Occurrences';
                     ToolTip = 'Number of occurrences of this source text in the application.';
                     Visible = true;
-                    ApplicationArea = All;
                 }
             }
         }
-        area(Factboxes)
+        area(FactBoxes)
         {
             part(TransNotes; "BCX Translation Notes")
             {
+                ApplicationArea = All;
+                Editable = false;
                 SubPageLink = "Project Code" = field("Project Code"),
                             "Trans-Unit Id" = field("Trans-Unit Id");
-                Editable = false;
-                ApplicationArea = All;
             }
             part(TargetFactbox; "BCX Trans Target Factbox")
             {
+                ApplicationArea = All;
                 SubPageLink = "Project Code" = field("Project Code"),
                             "Trans-Unit Id" = field("Trans-Unit Id");
-                ApplicationArea = All;
             }
 
         }
@@ -87,23 +87,23 @@ page 78603 "BCX Translation Target List"
     {
         area(Processing)
         {
-            action("Translate")
+            action(Translate)
             {
                 ApplicationArea = All;
                 Caption = 'Translate';
-                ToolTip = 'Translate the selected text.';
+                Enabled = ShowTranslate;
                 Image = Translation;
                 Promoted = true;
-                PromotedOnly = true;
                 PromotedCategory = Process;
-                Enabled = ShowTranslate;
+                PromotedOnly = true;
+                ToolTip = 'Translate the selected text.';
 
-                trigger OnAction();
+                trigger OnAction()
                 var
                     Project: Record "BCX Translation Project";
                     Translater: Codeunit "BCX Translate Dispatcher";
                 begin
-                    Project.get(Rec."Project Code");
+                    Project.Get(Rec."Project Code");
                     Rec.Target := Translater.Translate(Project."Project Code", Project."Source Language ISO code",
                                               Rec."Target Language ISO code",
                                               Rec.Source);
@@ -115,14 +115,14 @@ page 78603 "BCX Translation Target List"
             {
                 ApplicationArea = All;
                 Caption = 'Translate All';
-                ToolTip = 'Translate all texts within the current filter.';
+                Enabled = ShowTranslate;
                 Image = Translations;
                 Promoted = true;
-                PromotedOnly = true;
-                Enabled = ShowTranslate;
                 PromotedCategory = Process;
+                PromotedOnly = true;
+                ToolTip = 'Translate all texts within the current filter.';
 
-                trigger OnAction();
+                trigger OnAction()
                 var
                     MenuSelectionTxt: Label 'Convert all,Convert only missing';
                 begin
@@ -135,18 +135,18 @@ page 78603 "BCX Translation Target List"
                     end;
                 end;
             }
-            action("Copy")
+            action(Copy)
             {
                 ApplicationArea = All;
                 Caption = 'Copy';
-                ToolTip = 'Copy the source text to the target text.';
+                Enabled = ShowTranslate;
                 Image = Copy;
                 Promoted = true;
-                PromotedOnly = true;
                 PromotedCategory = Process;
-                Enabled = ShowTranslate;
+                PromotedOnly = true;
+                ToolTip = 'Copy the source text to the target text.';
 
-                trigger OnAction();
+                trigger OnAction()
                 begin
                     Rec.Target := Rec.Source;
                     Rec.Validate(Target);
@@ -156,14 +156,14 @@ page 78603 "BCX Translation Target List"
             {
                 ApplicationArea = All;
                 Caption = 'Copy All';
-                ToolTip = 'Copy all source texts to the target texts within the current filter.';
+                Enabled = ShowTranslate;
                 Image = Translations;
                 Promoted = true;
-                PromotedOnly = true;
-                Enabled = ShowTranslate;
                 PromotedCategory = Process;
+                PromotedOnly = true;
+                ToolTip = 'Copy all source texts to the target texts within the current filter.';
 
-                trigger OnAction();
+                trigger OnAction()
                 var
                     MenuSelectionTxt: Label 'Copy all,Copy only missing';
                 begin
@@ -180,11 +180,11 @@ page 78603 "BCX Translation Target List"
             {
                 ApplicationArea = All;
                 Caption = 'Select All';
-                ToolTip = 'Mark all lines to be translated.';
                 Image = Approve;
                 Promoted = true;
-                PromotedOnly = true;
                 PromotedCategory = Process;
+                PromotedOnly = true;
+                ToolTip = 'Mark all lines to be translated.';
                 trigger OnAction()
                 var
                     TransTarget: Record "BCX Translation Target";
@@ -202,13 +202,13 @@ page 78603 "BCX Translation Target List"
             }
             action("Select Empty Translations")
             {
-                Caption = 'Select Empty Translations';
-                ToolTip = 'Mark all lines with empty translations to be translated.';
-                Image = SelectEntries;
                 ApplicationArea = All;
+                Caption = 'Select Empty Translations';
+                Image = SelectEntries;
                 Promoted = true;
-                PromotedOnly = true;
                 PromotedCategory = Process;
+                PromotedOnly = true;
+                ToolTip = 'Mark all lines with empty translations to be translated.';
                 trigger OnAction()
                 begin
                     Rec.SetRange(Target, '');
@@ -218,11 +218,11 @@ page 78603 "BCX Translation Target List"
             {
                 ApplicationArea = All;
                 Caption = 'Deselect All';
-                ToolTip = 'Unmark all lines to be translated.';
                 Image = Cancel;
                 Promoted = true;
-                PromotedOnly = true;
                 PromotedCategory = Process;
+                PromotedOnly = true;
+                ToolTip = 'Unmark all lines to be translated.';
                 trigger OnAction()
                 var
                     TransTarget: Record "BCX Translation Target";
@@ -240,11 +240,11 @@ page 78603 "BCX Translation Target List"
             {
                 ApplicationArea = All;
                 Caption = 'Clear All translations within filter';
-                ToolTip = 'Clear all translations within the current filter.';
                 Image = RemoveLine;
                 Promoted = true;
-                PromotedOnly = true;
                 PromotedCategory = Process;
+                PromotedOnly = true;
+                ToolTip = 'Clear all translations within the current filter.';
                 trigger OnAction()
                 var
                     TransTarget: Record "BCX Translation Target";
@@ -259,26 +259,26 @@ page 78603 "BCX Translation Target List"
             }
             action("Translation Terms")
             {
-                Caption = 'Translation Terms';
-                ToolTip = 'Manage translation terms for the current project and target language.';
                 ApplicationArea = All;
+                Caption = 'Translation Terms';
                 Image = BeginningText;
                 Promoted = true;
-                PromotedOnly = true;
                 PromotedCategory = Process;
+                PromotedOnly = true;
                 RunObject = page "BCX Translation terms";
                 RunPageLink = "Project Code" = field("Project Code"),
                             "Target Language" = field("Target Language ISO code");
+                ToolTip = 'Manage translation terms for the current project and target language.';
             }
             action("Export Translation File")
             {
                 ApplicationArea = All;
                 Caption = 'Export Translation File';
-                ToolTip = 'Export the translation file for the current project and target language.';
                 Image = ExportFile;
                 Promoted = true;
-                PromotedOnly = true;
                 PromotedCategory = Process;
+                PromotedOnly = true;
+                ToolTip = 'Export the translation file for the current project and target language.';
                 trigger OnAction()
                 var
                     TransProject: Record "BCX Translation Project";
@@ -287,7 +287,7 @@ page 78603 "BCX Translation Target List"
 
                 begin
                     if Confirm(WarningTxt) then begin
-                        TransProject.get(Rec."Project Code");
+                        TransProject.Get(Rec."Project Code");
                         case TransProject."NAV Version" of
                             TransProject."NAV Version"::"Dynamics 365 Business Central":
                                 begin
@@ -302,13 +302,13 @@ page 78603 "BCX Translation Target List"
             }
             action("Find Duplicates")
             {
+                ApplicationArea = All;
                 Caption = 'Find Duplicates';
-                ToolTip = 'Find duplicate source texts and copy existing translations to empty targets.';
                 Image = Find;
                 Promoted = true;
-                PromotedOnly = true;
                 PromotedCategory = Process;
-                ApplicationArea = All;
+                PromotedOnly = true;
+                ToolTip = 'Find duplicate source texts and copy existing translations to empty targets.';
 
                 trigger OnAction()
                 var
@@ -320,13 +320,13 @@ page 78603 "BCX Translation Target List"
             }
             action("Update From Source")
             {
+                ApplicationArea = All;
                 Caption = 'Update From Source';
-                ToolTip = 'Update target texts from source texts if the source text has changed. Also removes obsolete targets.';
                 Image = UpdateXML;
                 Promoted = true;
-                PromotedOnly = true;
                 PromotedCategory = Process;
-                ApplicationArea = All;
+                PromotedOnly = true;
+                ToolTip = 'Update target texts from source texts if the source text has changed. Also removes obsolete targets.';
 
                 trigger OnAction()
                 var
@@ -340,21 +340,21 @@ page 78603 "BCX Translation Target List"
         }
     }
     var
-        ShowTranslate: Boolean;
         ShowTargetLanguageCode: Boolean;
+        ShowTranslate: Boolean;
         TargetLanguageFilter: Text[10];
         TargetLanguageIsoFilter: Text[10];
 
 
     trigger OnOpenPage()
     var
-        TransSource: Record "BCX Translation Source";
-        TransTarget: Record "BCX Translation Target";
-        TransSetup: Record "BCX Translation Setup";
-        TransExistingTarget: Record "BCX Translation Target";
         TargetLanguage: Record "BCX Target Language";
+        TransSetup: Record "BCX Translation Setup";
+        TransSource: Record "BCX Translation Source";
+        TransExistingTarget: Record "BCX Translation Target";
+        TransTarget: Record "BCX Translation Target";
     begin
-        TransSetup.get();
+        TransSetup.Get();
         ShowTranslate := TransSetup."Use Free Google Translate" or TransSetup."Use OpenAI" or TransSetup."Use DeepL";
         ShowTargetLanguageCode := true;
         TargetLanguageFilter := CopyStr(Rec.GetFilter("Target Language"), 1, 10);
@@ -369,9 +369,9 @@ page 78603 "BCX Translation Target List"
                     TransTarget."Target Language" := TargetLanguageFilter;
                     TransTarget."Target Language ISO code" := TargetLanguageIsoFilter;
 
-                    TransExistingTarget.SetRange("Source", TransTarget.Source);
+                    TransExistingTarget.SetRange(Source, TransTarget.Source);
                     TransExistingTarget.SetRange("Target Language ISO code", TargetLanguageIsoFilter);
-                    TransExistingTarget.SetRange("Translate", false);
+                    TransExistingTarget.SetRange(Translate, false);
                     if TransExistingTarget.FindFirst() then begin
                         TransTarget.Target := TransExistingTarget.Target;
                         TransTarget.Translate := false;
@@ -404,12 +404,12 @@ page 78603 "BCX Translation Target List"
 
     local procedure CopyAll(inOnlyEmpty: Boolean)
     var
-        TransTarget: Record "BCX Translation Target";
         Project: Record "BCX Translation Project";
+        TransTarget: Record "BCX Translation Target";
         Window: Dialog;
-        DialogTxt: Label 'Copying #1###### of #2######', Comment = '#1 is the number of copied captions, #2 is the total number of captions to process';
         Counter: Integer;
         TotalCount: Integer;
+        DialogTxt: Label 'Copying #1###### of #2######', Comment = '#1 is the number of copied captions, #2 is the total number of captions to process';
     begin
         Project.Get(Rec."Project Code");
         if inOnlyEmpty then
@@ -421,7 +421,7 @@ page 78603 "BCX Translation Target List"
         TotalCount := TransTarget.Count;
         Window.Open(DialogTxt);
 
-        if TransTarget.FindSet() then 
+        if TransTarget.FindSet() then
             repeat
                 Counter += 1;
                 Window.Update(1, Counter);
@@ -431,21 +431,21 @@ page 78603 "BCX Translation Target List"
                 TransTarget.Modify();
                 Commit();
             until TransTarget.Next() = 0;
-        
+
 
         Window.Close();
     end;
 
     local procedure TranslateAll(inOnlyEmpty: Boolean)
     var
+        Project: Record "BCX Translation Project";
         TransTarget: Record "BCX Translation Target";
         TransTarget2: Record "BCX Translation Target";
-        Project: Record "BCX Translation Project";
         Translater: Codeunit "BCX Translate Dispatcher";
         Window: Dialog;
-        DialogTxt: Label 'Converting #1###### of #2######', Comment = '#1 is the number of converted captions, #2 is the total number of captions to process';
         Counter: Integer;
         TotalCount: Integer;
+        DialogTxt: Label 'Converting #1###### of #2######', Comment = '#1 is the number of converted captions, #2 is the total number of captions to process';
     begin
         Project.Get(Rec."Project Code");
 
@@ -460,7 +460,7 @@ page 78603 "BCX Translation Target List"
         Window.Open(DialogTxt);
 
         TransTarget.SetCurrentKey(Source);
-        if TransTarget.FindSet() then 
+        if TransTarget.FindSet() then
             repeat
                 Counter += 1;
                 Window.Update(1, Counter);
@@ -501,9 +501,9 @@ page 78603 "BCX Translation Target List"
     local procedure ReplaceTermInTranslation(TargetLanguageIsoCode: Text[10]; inTarget: Text[2048]) outTarget: Text[2048]
     var
         TransTerm: Record "BCX Translation Term";
-        StartPos: Integer;
-        StartLetterIsUppercase: Boolean;
         Found: Boolean;
+        StartLetterIsUppercase: Boolean;
+        StartPos: Integer;
     begin
         TransTerm.SetRange("Project Code", Rec."Project Code");
         TransTerm.SetRange("Target Language", TargetLanguageIsoCode);
@@ -511,9 +511,9 @@ page 78603 "BCX Translation Target List"
             repeat
                 if TransTerm."Apply Pre-Translation" then
                     continue; // Skip terms that are marked for pre-translation only
-                StartPos := strpos(LowerCase(inTarget), LowerCase(TransTerm.Term));
+                StartPos := StrPos(LowerCase(inTarget), LowerCase(TransTerm.Term));
                 if StartPos > 0 then begin
-                    StartLetterIsUppercase := copystr(inTarget, StartPos, 1) = uppercase(copystr(inTarget, StartPos, 1));
+                    StartLetterIsUppercase := CopyStr(inTarget, StartPos, 1) = UpperCase(CopyStr(inTarget, StartPos, 1));
                     if StartLetterIsUppercase then
                         TransTerm.Translation := UpperCase(TransTerm.Translation[1]) + CopyStr(TransTerm.Translation, 2)
                     else
@@ -521,11 +521,11 @@ page 78603 "BCX Translation Target List"
                     if (StartPos > 1) then begin
                         outTarget := CopyStr(inTarget, 1, StartPos - 1) +
                                      TransTerm.Translation +
-                                     CopyStr(inTarget, StartPos + strlen(TransTerm.Term));
+                                     CopyStr(inTarget, StartPos + StrLen(TransTerm.Term));
                         Found := true;
                     end else begin
                         outTarget := TransTerm.Translation +
-                                     CopyStr(inTarget, strlen(TransTerm.Term) + 1);
+                                     CopyStr(inTarget, StrLen(TransTerm.Term) + 1);
                         Found := true;
                     end;
                 end;
@@ -559,18 +559,18 @@ page 78603 "BCX Translation Target List"
                     Counter += 1;
                 end;
             until TransTarget.Next() = 0;
-        message(FinishedTxt, Counter);
+        Message(FinishedTxt, Counter);
     end;
 
     local procedure UpdateFromSource()
     var
-        TransTarget: Record "BCX Translation Target";
         TransSource: Record "BCX Translation Source";
+        TransTarget: Record "BCX Translation Target";
         Counter: Integer;
         DeletedCounter: Integer;
         FinishedTxt: Label '%1 source captions updated. %2 obsolete targets deleted.', Comment = '%1 is the number of updated captions, %2 is the number of deleted obsolete targets';
     begin
-        TransTarget.Modifyall(Translate, false);
+        TransTarget.ModifyAll(Translate, false);
         TransSource.SetFilter("Project Code", Rec.GetFilter("Project Code"));
         if TransSource.FindSet() then
             repeat

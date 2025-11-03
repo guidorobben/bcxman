@@ -1,12 +1,12 @@
 #pragma implicitwith disable
 page 78600 "BCX Trans Project List"
 {
+    ApplicationArea = All;
     Caption = 'Translation Projects';
     PageType = List;
-    ApplicationArea = All;
-    UsageCategory = Lists;
     SourceTable = "BCX Translation Project";
     SourceTableView = sorting("Project Code") order(descending);
+    UsageCategory = Lists;
 
     layout
     {
@@ -22,8 +22,8 @@ page 78600 "BCX Trans Project List"
                 }
                 field("Project Name"; Rec."Project Name")
                 {
-                    ToolTip = 'The name of the translation project.';
                     ApplicationArea = All;
+                    ToolTip = 'The name of the translation project.';
 
                 }
                 field(Status; Rec.Status)
@@ -33,38 +33,38 @@ page 78600 "BCX Trans Project List"
                 }
                 field("NAV Version"; Rec."NAV Version")
                 {
-                    ToolTip = 'The NAV version for the translation project.';
                     ApplicationArea = All;
+                    ToolTip = 'The NAV version for the translation project.';
                 }
                 field("File Name"; Rec."File Name")
                 {
-                    ToolTip = 'The name of the file associated with the translation project.';
                     ApplicationArea = All;
+                    ToolTip = 'The name of the file associated with the translation project.';
                 }
                 field("Source Language"; Rec."Source Language")
                 {
-                    ToolTip = 'The source language for the translation project.';
                     ApplicationArea = All;
+                    ToolTip = 'The source language for the translation project.';
                 }
                 field("Source Language ISO code"; Rec."Source Language ISO code")
                 {
-                    ToolTip = 'The ISO code of the source language for the translation project.';
                     ApplicationArea = All;
+                    ToolTip = 'The ISO code of the source language for the translation project.';
                 }
                 field("Created By"; Rec."Created By")
                 {
-                    ToolTip = 'The user who created the translation project.';
                     ApplicationArea = All;
+                    ToolTip = 'The user who created the translation project.';
                 }
                 field("Creation Date"; Rec."Creation Date")
                 {
-                    ToolTip = 'The date when the translation project was created.';
                     ApplicationArea = All;
+                    ToolTip = 'The date when the translation project was created.';
                 }
                 field("Base Translation Imported"; Rec."Base Translation Imported")
                 {
-                    ToolTip = 'Indicates whether the base translation has been imported for the project.';
                     ApplicationArea = All;
+                    ToolTip = 'Indicates whether the base translation has been imported for the project.';
                 }
             }
         }
@@ -78,11 +78,11 @@ page 78600 "BCX Trans Project List"
             {
                 ApplicationArea = All;
                 Caption = 'Import Project';
-                ToolTip = 'Import a translation project from a ZIP file.';
                 Image = ImportCodes;
                 Promoted = true;
-                PromotedOnly = true;
                 PromotedCategory = Process;
+                PromotedOnly = true;
+                ToolTip = 'Import a translation project from a ZIP file.';
 
                 trigger OnAction()
                 var
@@ -96,22 +96,22 @@ page 78600 "BCX Trans Project List"
             {
                 ApplicationArea = All;
                 Caption = 'Import Source';
-                ToolTip = 'Import translation source from an XLIFF file.';
                 Image = ImportCodes;
                 Promoted = true;
-                PromotedOnly = true;
                 PromotedCategory = Process;
+                PromotedOnly = true;
+                ToolTip = 'Import translation source from an XLIFF file.';
 
                 trigger OnAction()
                 var
-                    TransSource: Record "BCX Translation Source";
                     TransNotes: Record "BCX Translation Notes";
                     TransProject: Record "BCX Translation Project";
+                    TransSource: Record "BCX Translation Source";
                     XliffParser: Codeunit "BCX Xliff Parser";
-                    DeleteWarningTxt: Label 'This will overwrite the Translation source for %1', Comment = 'Warning message when importing translation source that will overwrite existing source. %1 is Project Code';
-                    FileName: Text;
                     InS: InStream;
+                    DeleteWarningTxt: Label 'This will overwrite the Translation source for %1', Comment = 'Warning message when importing translation source that will overwrite existing source. %1 is Project Code';
                     ImportedTxt: Label 'The file %1 has been imported into project %2', Comment = 'Message shown when a file has been successfully imported. %1 is the file name, %2 is the project code';
+                    FileName: Text;
                 begin
                     TransSource.SetRange("Project Code", Rec."Project Code");
                     TransNotes.SetRange("Project Code", Rec."Project Code");
@@ -132,57 +132,57 @@ page 78600 "BCX Trans Project List"
 
                     TransProject.Get(Rec."Project Code");
                     if (TransProject."File Name" <> '') and Success then
-                        message(ImportedTxt, TransProject."File Name", Rec."Project Code");
+                        Message(ImportedTxt, TransProject."File Name", Rec."Project Code");
                 end;
             }
             action("Target Languages")
             {
                 ApplicationArea = All;
                 Caption = 'Target Languages';
-                ToolTip = 'Manage target languages for the translation project.';
                 Image = Language;
                 Promoted = true;
-                PromotedOnly = true;
                 PromotedCategory = Process;
+                PromotedOnly = true;
                 RunObject = page "BCX Target Language List";
                 RunPageLink = "Project Code" = field("Project Code"),
                 "Source Language" = field("Source Language"),
                 "Source Language ISO code" = field("Source Language ISO code");
+                ToolTip = 'Manage target languages for the translation project.';
             }
             action("Translation Source")
             {
                 ApplicationArea = All;
                 Caption = 'Translation Source';
-                ToolTip = 'View and manage translation source entries for the project.';
                 Image = SourceDocLine;
                 Promoted = true;
-                PromotedOnly = true;
                 PromotedCategory = Process;
+                PromotedOnly = true;
                 RunObject = page "BCX Translation Source List";
                 RunPageLink = "Project Code" = field("Project Code");
+                ToolTip = 'View and manage translation source entries for the project.';
             }
             action("General Translation Terms")
             {
-                Caption = 'General Translation Terms';
-                ToolTip = 'View and manage general translation terms for the project.';
                 ApplicationArea = All;
+                Caption = 'General Translation Terms';
                 Image = BeginningText;
                 Promoted = true;
-                PromotedOnly = true;
                 PromotedCategory = Process;
+                PromotedOnly = true;
                 RunObject = page "BCX Gen. Translation Terms";
                 RunPageLink = "Project Code" = field("Project Code");
+                ToolTip = 'View and manage general translation terms for the project.';
 
             }
             action("All Translation Targets")
             {
-                Caption = 'All Translation Targets';
-                ToolTip = 'View all translation targets for the project.';
                 ApplicationArea = All;
+                Caption = 'All Translation Targets';
                 Image = Translate;
                 Promoted = true;
-                PromotedOnly = true;
                 PromotedCategory = Process;
+                PromotedOnly = true;
+                ToolTip = 'View all translation targets for the project.';
 
                 trigger OnAction()
                 var
@@ -208,7 +208,7 @@ page 78600 "BCX Trans Project List"
         TransSetup: Record "BCX Translation Setup";
 
     begin
-        TransSetup.get();
+        TransSetup.Get();
         Rec.Validate("Source Language", TransSetup."Default Source Language code");
         Rec.Validate("NAV Version", Rec."NAV Version"::"Dynamics 365 Business Central");
     end;
@@ -220,7 +220,7 @@ page 78600 "BCX Trans Project List"
     begin
         UserAccess.SetRange("User Id", UserId());
         if UserAccess.FindSet() then
-            Repeat
+            repeat
                 if FilterTxt <> '' then
                     FilterTxt += '|' + UserAccess."Project Code"
                 else

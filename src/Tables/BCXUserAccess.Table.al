@@ -17,15 +17,15 @@ table 78608 "BCX User Access"
         }
         field(30; "Project Name"; Text[100])
         {
+            CalcFormula = lookup("BCX Translation Project"."Project Name" where("Project Code" = field("Project Code")));
             Caption = 'Project Name';
             FieldClass = FlowField;
-            CalcFormula = lookup("BCX Translation Project"."Project Name" where("Project Code" = field("Project Code")));
         }
         field(40; "User Name"; Text[100])
         {
+            CalcFormula = lookup(User."Full Name" where("User Name" = field("User Id")));
             Caption = 'User Name';
             FieldClass = FlowField;
-            CalcFormula = lookup(User."Full Name" where("User Name" = field("User Id")));
         }
     }
 

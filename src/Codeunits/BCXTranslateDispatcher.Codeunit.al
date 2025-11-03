@@ -6,18 +6,18 @@ codeunit 78603 "BCX Translate Dispatcher"
 
     procedure Translate(ProjectCode: Text[20]; SourceLang: Text[10]; TargetLang: Text[10]; TextToTranslate: Text[2048]): Text[2048]
     var
-        GPT: Codeunit "BCX GPT Translate Rest";
-        Google: Codeunit "BCX Google Translate Rest";
         DeepL: Codeunit "BCX DeepL Translate";
+        Google: Codeunit "BCX Google Translate Rest";
+        GPT: Codeunit "BCX GPT Translate Rest";
     begin
         EnsureSetupLoaded();
 
         if CachedSetup."Use OpenAI" then
             exit(GPT.Translate(ProjectCode, SourceLang, TargetLang, TextToTranslate))
-        else 
+        else
             if CachedSetup."Use DeepL" then
                 exit(DeepL.Translate(ProjectCode, SourceLang, TargetLang, TextToTranslate))
-            else 
+            else
                 if CachedSetup."Use Free Google Translate" then
                     exit(Google.Translate(ProjectCode, SourceLang, TargetLang, TextToTranslate));
     end;

@@ -9,7 +9,7 @@ page 78613 "BCX Translation Activities"
     {
         area(Content)
         {
-            cuegroup("Statuses")
+            cuegroup(Statuses)
             {
                 Caption = 'Statuses';
                 field("Open Projects"; Rec."Open Projects")
@@ -28,18 +28,18 @@ page 78613 "BCX Translation Activities"
                     ToolTip = 'Finished Projects - sent to customer and done for now';
                 }
             }
-            cuegroup("Totals")
+            cuegroup(Totals)
             {
                 Caption = 'Totals';
                 field("Projects this Month"; Rec."Projects this Month")
                 {
-                    ToolTip = 'Projects this Month - number of projects with activity this month';
                     ApplicationArea = All;
+                    ToolTip = 'Projects this Month - number of projects with activity this month';
                 }
                 field("Total Projects"; Rec."Total Projects")
                 {
-                    ToolTip = 'Total Projects - total number of projects in the system';
                     ApplicationArea = All;
+                    ToolTip = 'Total Projects - total number of projects in the system';
                 }
             }
         }
@@ -50,8 +50,8 @@ page 78613 "BCX Translation Activities"
     trigger OnOpenPage()
     var
         UserAccess: Record "BCX User Access";
-        DateFilterTxt: Text;
         DateFilterLbl: Label '%1..%2', Comment = '%1: Start date, %2: End date';
+        DateFilterTxt: Text;
     begin
         if not Rec.Get() then begin
             Rec.Init();

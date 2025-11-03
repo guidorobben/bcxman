@@ -3,9 +3,9 @@ codeunit 78602 "BCX GPT Translate Rest"
     procedure SendHttpRequestWithAuth(HttpMethod: Text[10]; Url: Text; Payload: Text; ContentType: Text; HeaderName: Text; HeaderValue: Text; var Response: HttpResponseMessage)
     var
         Client: HttpClient;
-        Request: HttpRequestMessage;
-        RequestHeaders: HttpHeaders;
         Content: HttpContent;
+        RequestHeaders: HttpHeaders;
+        Request: HttpRequestMessage;
     begin
         // Create request
         Request.SetRequestUri(Url);
@@ -50,22 +50,22 @@ codeunit 78602 "BCX GPT Translate Rest"
     // Main translation function
     procedure Translate(ProjectCode: Text[20]; inSourceLang: Text[10]; inTargetLang: Text[10]; inText: Text[4000]) outTransText: Text[2048]
     var
+        GenTransTerms: Record "BCX Gen. Translation Term";
         Setup: Record "BCX Translation Setup";
         TransTerms: Record "BCX Translation Term";
-        GenTransTerms: Record "BCX Gen. Translation Term";
         TypeHelper: Codeunit "Type Helper";
         HttpClient: HttpClient;
+        Content: HttpContent;
+        Headers: HttpHeaders;
         Request: HttpRequestMessage;
         Response: HttpResponseMessage;
-        Headers: HttpHeaders;
-        Content: HttpContent;
-        Payload: JsonObject;
         Messages: JsonArray;
+        Payload: JsonObject;
         SystemMsg, UserMsg : JsonObject;
-        ResponseText: Text;
-        GlossaryTerms: Text;
-        SystemPrompt: Text;
         Glossary: List of [Text];
+        GlossaryTerms: Text;
+        ResponseText: Text;
+        SystemPrompt: Text;
         Term: Text;
     begin
         if (inSourceLang = inTargetLang) then begin
@@ -111,7 +111,7 @@ codeunit 78602 "BCX GPT Translate Rest"
 
         foreach Term in Glossary do
 #pragma warning disable AA0139
-            InText := InText.Replace(Term, '__KEEP__' + Term + '__/KEEP__');
+            inText := inText.Replace(Term, '__KEEP__' + Term + '__/KEEP__');
 #pragma warning restore AA0139
 
         UserMsg.Add('content', inTargetLang + TypeHelper.NewLine() + inText);
@@ -148,15 +148,15 @@ codeunit 78602 "BCX GPT Translate Rest"
 
     local procedure ParseTranslatedText(JsonText: Text): Text
     var
-        Tok: JsonToken;
+        ChoicesArr: JsonArray;
+        ChoiceObj: JsonObject;
+        MsgObj: JsonObject;
         Obj: JsonObject;
         ChoicesTok: JsonToken;
-        ChoicesArr: JsonArray;
         ChoiceTok: JsonToken;
-        ChoiceObj: JsonObject;
-        MsgTok: JsonToken;
-        MsgObj: JsonObject;
         ContentTok: JsonToken;
+        MsgTok: JsonToken;
+        Tok: JsonToken;
         Result: Text;
     begin
         if not Tok.ReadFrom(JsonText) then

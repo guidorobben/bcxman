@@ -1,13 +1,13 @@
 #pragma implicitwith disable
 page 78608 "BCX Gen. Translation Terms"
 {
+    ApplicationArea = All;
+    AutoSplitKey = true;
     Caption = 'General Translation Terms';
+    DataCaptionFields = "Project Code";
     PageType = List;
     SourceTable = "BCX Gen. Translation Term";
-    AutoSplitKey = true;
     UsageCategory = Tasks;
-    ApplicationArea = All;
-    DataCaptionFields = "Project Code";
 
     layout
     {
@@ -45,7 +45,7 @@ page 78608 "BCX Gen. Translation Terms"
         FilterVal: Text;
     begin
         // Get the filter applied to the "Project Code" field
-        FilterVal := Rec.GETFILTER("Project Code");
+        FilterVal := Rec.GetFilter("Project Code");
         if FilterVal = '' then
             exit;
 

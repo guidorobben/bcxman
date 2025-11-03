@@ -6,15 +6,15 @@ pageextension 78600 "BCX User List" extends Users
         {
             action("BCX User Access")
             {
-                Caption = 'User Access';
-                ToolTip = 'Set access for the BCX Translation Management app.';
                 ApplicationArea = All;
+                Caption = 'User Access';
                 Image = ServiceAccessories;
                 Promoted = true;
-                PromotedOnly = true;
                 PromotedCategory = Process;
+                PromotedOnly = true;
                 RunObject = page "BCX User Access";
                 RunPageLink = "User Id" = field("User Name");
+                ToolTip = 'Set access for the BCX Translation Management app.';
             }
         }
     }

@@ -12,32 +12,32 @@ page 78601 "BCX Translation Source List"
             {
                 field("Field Name"; Rec."Field Name")
                 {
-                    ToolTip = 'The name of the field to be translated.';
                     ApplicationArea = All;
+                    ToolTip = 'The name of the field to be translated.';
 
                 }
                 field("Trans-Unit Id"; Rec."Trans-Unit Id")
                 {
-                    ToolTip = 'The unique identifier for the translation unit.';
                     ApplicationArea = All;
+                    ToolTip = 'The unique identifier for the translation unit.';
                     Visible = false;
 
                 }
                 field(Source; Rec.Source)
                 {
-                    ToolTip = 'The original text that needs to be translated.';
                     ApplicationArea = All;
+                    ToolTip = 'The original text that needs to be translated.';
 
                 }
             }
         }
-        area(Factboxes)
+        area(FactBoxes)
         {
             part(TransNotes; "BCX Translation Notes")
             {
+                ApplicationArea = All;
                 SubPageLink = "Project Code" = field("Project Code"),
                             "Trans-Unit Id" = field("Trans-Unit Id");
-                ApplicationArea = All;
             }
 
         }
@@ -48,13 +48,13 @@ page 78601 "BCX Translation Source List"
         {
             action("Show Empty Captions")
             {
-                Caption = 'Show Empty Captions';
-                ToolTip = 'Show all captions that are currently empty.';
                 ApplicationArea = All;
+                Caption = 'Show Empty Captions';
                 Image = ShowSelected;
                 Promoted = true;
-                PromotedOnly = true;
                 PromotedCategory = Process;
+                PromotedOnly = true;
+                ToolTip = 'Show all captions that are currently empty.';
                 trigger OnAction()
                 begin
                     Rec.SetRange(Source, '');
@@ -62,13 +62,13 @@ page 78601 "BCX Translation Source List"
             }
             action("Show All Captions")
             {
-                Caption = 'Show All Captions';
-                ToolTip = 'Show all captions, including those that are already translated.';
                 ApplicationArea = All;
+                Caption = 'Show All Captions';
                 Image = ShowList;
                 Promoted = true;
-                PromotedOnly = true;
                 PromotedCategory = Process;
+                PromotedOnly = true;
+                ToolTip = 'Show all captions, including those that are already translated.';
                 trigger OnAction()
                 begin
                     Rec.SetRange(Source);

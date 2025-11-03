@@ -1,32 +1,32 @@
 table 78606 "BCX Translation Setup"
 {
-    DataClassification = SystemMetadata;
     Caption = 'Translation Setup';
+    DataClassification = SystemMetadata;
 
     fields
     {
-        field(10; "Primary Key"; code[10])
+        field(10; "Primary Key"; Code[10])
         {
-            DataClassification = SystemMetadata;
             Caption = 'Primary Key';
-        }
-        field(30; "Default Source Language code"; code[10])
-        {
             DataClassification = SystemMetadata;
+        }
+        field(30; "Default Source Language code"; Code[10])
+        {
             Caption = 'Default Source Language code';
+            DataClassification = SystemMetadata;
             TableRelation = Language;
         }
         field(40; "Use Free Google Translate"; Boolean)
         {
-            DataClassification = SystemMetadata;
             Caption = 'Use Free Google Translate';
+            DataClassification = SystemMetadata;
             InitValue = true;
             // To prepare for other translation API's
         }
         field(50; Logo; MediaSet)
         {
-            DataClassification = SystemMetadata;
             Caption = 'Logo';
+            DataClassification = SystemMetadata;
         }
 
         field(60; "Use OpenAI"; Boolean)
@@ -44,9 +44,9 @@ table 78606 "BCX Translation Setup"
         field(80; "OpenAI Model"; Option)
         {
             Caption = 'OpenAI Model';
-            OptionMembers = "gpt-3.5-turbo","gpt-4o";
 
             DataClassification = SystemMetadata;
+            OptionMembers = "gpt-3.5-turbo","gpt-4o";
         }
 
         field(90; "Use DeepL"; Boolean)

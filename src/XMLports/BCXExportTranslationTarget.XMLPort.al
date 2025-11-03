@@ -4,11 +4,11 @@ xmlport 78601 "BCX Export Translation Target"
     DefaultNamespace = 'urn:oasis:names:tc:xliff:document:1.2';
     Direction = Export;
     Encoding = UTF8;
-    XmlVersionNo = V10;
     Format = Xml;
     PreserveWhiteSpace = true;
     UseDefaultNamespace = true;
     UseRequestPage = false;
+    XmlVersionNo = V10;
 
     schema
     {
@@ -69,9 +69,7 @@ xmlport 78601 "BCX Export Translation Target"
                         {
                             XmlName = 'trans-unit';
 
-                            fieldattribute(id; Target."Trans-Unit Id")
-                            {
-                            }
+                            fieldattribute(id; Target."Trans-Unit Id") { }
                             textattribute("size-unit")
                             {
                                 trigger OnBeforePassVariable()
@@ -91,7 +89,7 @@ xmlport 78601 "BCX Export Translation Target"
                                 Occurrence = Optional;
                                 trigger OnAfterAssignVariable()
                                 begin
-                                    target."al-object-target" := "al-object-target";
+                                    Target."al-object-target" := "al-object-target";
                                 end;
                             }
                             fieldelement(Source; Target.Source)
@@ -105,22 +103,13 @@ xmlport 78601 "BCX Export Translation Target"
 
                             tableelement(note; "BCX Translation Notes")
                             {
-                                LinkTable = Target;
                                 LinkFields = "Project Code" = field("Project Code"), "Trans-Unit Id" = field("Trans-Unit Id");
+                                LinkTable = Target;
 
-                                fieldattribute(from; note.From)
-                                {
-                                }
-                                fieldattribute(annotates; note.Annotates)
-                                {
-                                }
-                                fieldattribute(priority; note.Priority)
-                                {
-                                }
-                                fieldattribute(note; note.Note)
-                                {
-
-                                }
+                                fieldattribute(from; note.From) { }
+                                fieldattribute(annotates; note.Annotates) { }
+                                fieldattribute(priority; note.Priority) { }
+                                fieldattribute(note; note.Note) { }
                             }
 
                         }
@@ -133,29 +122,29 @@ xmlport 78601 "BCX Export Translation Target"
     var
         TransProject: Record "BCX Translation Project";
         ProjectCode: Code[20];
+        EquivalentTransCode: Text[10];
         SourceTransCode: Text[10];
         TargetTransCode: Text[10];
-        EquivalentTransCode: Text[10];
 
     trigger OnPreXmlPort()
     var
-        TempFile: Text;
         TargetLanguage: Text;
+        TempFile: Text;
     begin
-        TransProject.Get(target.getfilter("Project Code"));
+        TransProject.Get(Target.GetFilter("Project Code"));
         TargetLanguage := TargetTransCode;
         TempFile := TransProject."File Name";
 
-        if StrPos(lowercase(TempFile), '.g.xlf') > 0 then
-            currXMLport.Filename := CopyStr(TempFile, 1, StrPos(lowercase(TempFile), '.g.xlf')) +
+        if StrPos(LowerCase(TempFile), '.g.xlf') > 0 then
+            currXMLport.Filename := CopyStr(TempFile, 1, StrPos(LowerCase(TempFile), '.g.xlf')) +
                                      TargetLanguage + '.xlf'
         else
-            if StrPos(lowercase(TempFile), '.xlf') > 0 then
-                currXMLport.Filename := CopyStr(TempFile, 1, StrPos(lowercase(TempFile), '.xlf')) +
+            if StrPos(LowerCase(TempFile), '.xlf') > 0 then
+                currXMLport.Filename := CopyStr(TempFile, 1, StrPos(LowerCase(TempFile), '.xlf')) +
                                          TargetLanguage + '.xlf'
             else
-                if StrPos(lowercase(TempFile), '.xlif') > 0 then
-                    currXMLport.Filename := CopyStr(TempFile, 1, StrPos(lowercase(TempFile), '.xlif')) +
+                if StrPos(LowerCase(TempFile), '.xlif') > 0 then
+                    currXMLport.Filename := CopyStr(TempFile, 1, StrPos(LowerCase(TempFile), '.xlif')) +
                                              TargetLanguage + '.xlif';
     end;
 

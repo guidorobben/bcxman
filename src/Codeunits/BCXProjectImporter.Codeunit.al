@@ -6,35 +6,35 @@ codeunit 78604 "BCX Project Importer"
 
     procedure ImportFromZip(ProjectCode: Code[20]; SourceLangIso: Text[10]; Overwrite: Boolean)
     var
-        TransSource: Record "BCX Translation Source";
         BaseNotes: Record "BCX Base Translation Notes";
-        TransNotes: Record "BCX Translation Notes";
-        TransTargetLanguage: Record "BCX Target Language";
-        TransTarget: Record "BCX Translation Target";
         TransBaseTarget: Record "BCX Base Translation Target";
+        TransTargetLanguage: Record "BCX Target Language";
+        TransNotes: Record "BCX Translation Notes";
         TransProject: Record "BCX Translation Project";
+        TransSource: Record "BCX Translation Source";
+        TransTarget: Record "BCX Translation Target";
         TransTerm: Record "BCX Translation Term";
 
-        SourceLanguageRec: Record "Language";
-        TargetLanguageRec: Record "Language";
+        SourceLanguageRec: Record Language;
+        TargetLanguageRec: Record Language;
         DataCompression: Codeunit "Data Compression";
         TempBlob: Codeunit "Temp Blob";
-        ProjectFile: Text;
-        InS: InStream;
-        EntryNames: List of [Text];
-        EntryName: Text;
-        EntryInS: InStream;
+        IsSource: Boolean;
 
         IsXlf: Boolean;
-        IsSource: Boolean;
+        Dialog: Dialog;
+        EntryInS: InStream;
+        InS: InStream;
+        ImportedCnt: Integer;
+        DeleteWarningTxt: Label 'This will delete all existing source and translations for project %1', Comment = 'Warning text when overwriting existing project, %1 is replaced with project code.';
+        StepTxt: Label 'Importing #1######', Comment = 'Dialog step text. #1###### is replaced with the file name being imported.';
+        EntryNames: List of [Text];
+        TargetsToProcess: List of [Text];
+        EntryName: Text;
+        ProjectFile: Text;
+        SourceName: Text;
         TargetLangISO: Text[10];
         OriginalProjectName: Text[100];
-        Dialog: Dialog;
-        TargetsToProcess: List of [Text];
-        SourceName: Text;
-        ImportedCnt: Integer;
-        StepTxt: Label 'Importing #1######', Comment = 'Dialog step text. #1###### is replaced with the file name being imported.';
-        DeleteWarningTxt: Label 'This will delete all existing source and translations for project %1', Comment = 'Warning text when overwriting existing project, %1 is replaced with project code.';
     begin
         // Optional cleanup if overwrite
         if Overwrite then begin
@@ -121,7 +121,7 @@ codeunit 78604 "BCX Project Importer"
             if OriginalProjectName <> '' then
                 TransProject.Validate("Project Name", OriginalProjectName);
 
-            SourceLanguageRec.Setrange("BCX ISO code", SourceLangIso);
+            SourceLanguageRec.SetRange("BCX ISO code", SourceLangIso);
             if not SourceLanguageRec.FindFirst() then
                 Error('Iso code not set for Language %1', SourceLangIso);
             TransProject.Validate("Source Language", SourceLanguageRec.Code);
@@ -146,15 +146,15 @@ codeunit 78604 "BCX Project Importer"
             TempBlob.CreateInStream(EntryInS);
 
             TransTargetLanguage.SetRange("Project Code", ProjectCode);
-            TransTargetLanguage.SetRange("Target Language ISO Code", TargetLangISO);
+            TransTargetLanguage.SetRange("Target Language ISO code", TargetLangISO);
             if not TransTargetLanguage.FindFirst() then begin
                 TransTargetLanguage.Init();
                 TransTargetLanguage."Project Code" := ProjectCode;
                 TransTargetLanguage."Source Language" := SourceLanguageRec.Code;
-                TransTargetLanguage."Source Language ISO Code" := SourceLangIso;
-                TransTargetLanguage."Target Language ISO Code" := TargetLangISO;
+                TransTargetLanguage."Source Language ISO code" := SourceLangIso;
+                TransTargetLanguage."Target Language ISO code" := TargetLangISO;
                 if TargetLangISO <> '' then begin
-                    TargetLanguageRec.Setrange("BCX ISO code", TargetLangISO);
+                    TargetLanguageRec.SetRange("BCX ISO code", TargetLangISO);
                     if TargetLanguageRec.FindFirst() then
                         TransTargetLanguage."Target Language" := TargetLanguageRec.Code;
                 end;
@@ -165,9 +165,9 @@ codeunit 78604 "BCX Project Importer"
             if (TargetLangISO <> '') and (TargetLangISO = SourceLangIso) then begin
                 ImportBaseTargetFromStream(ProjectCode, SourceLangIso, TargetLangISO, EntryName, EntryInS);
                 ImportTargetFromStream(ProjectCode, SourceLangIso, TargetLangISO, EntryName, EntryInS);      // Also import as normal target to have editable copy
-            end else 
+            end else
                 ImportTargetFromStream(ProjectCode, SourceLangIso, TargetLangISO, EntryName, EntryInS);
-            
+
             ImportedCnt += 1;
             Dialog.Update(1, CopyStr(EntryName, 1, 50));
         end;
@@ -183,9 +183,9 @@ codeunit 78604 "BCX Project Importer"
 
     local procedure HasExtension(FileName: Text; ExtWithDotLower: Text): Boolean
     var
-        nameLower: Text;
         extLen: Integer;
         startPos: Integer;
+        nameLower: Text;
     begin
         nameLower := LowerCase(FileName);
         extLen := StrLen(ExtWithDotLower);
@@ -197,14 +197,14 @@ codeunit 78604 "BCX Project Importer"
 
     local procedure ClassifyXliff(FileName: Text; var InS: InStream; var IsSource: Boolean; var SourceLang: Text[10]; var TargetLang: Text[10]; var OriginalProjectName: Text[100])
     var
+        LangTxt: Text;
         nameLower: Text;
+        ns: Text;
+        OriginalTxt: Text;
         XmlDoc: XmlDocument;
         Root: XmlElement;
         FileNode: XmlNode;
         FileChildren: XmlNodeList;
-        ns: Text;
-        LangTxt: Text;
-        OriginalTxt: Text;
     begin
         IsSource := false;
         SourceLang := '';
@@ -243,11 +243,11 @@ codeunit 78604 "BCX Project Importer"
 
     end;
 
-    
+
     local procedure GetAttr(Element: XmlElement; Name: Text): Text
     var
-        Attrs: XmlAttributeCollection;
         Attr: XmlAttribute;
+        Attrs: XmlAttributeCollection;
     begin
         if not Element.HasAttributes() then
             exit('');

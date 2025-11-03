@@ -12,33 +12,33 @@ table 78609 "BCX Translation Cue"
         }
         field(20; "Open Projects"; Integer)
         {
+            CalcFormula = count("BCX Translation Project" where(Status = const(Open), "Project Code" = field("Project Filter")));
             Caption = 'Open Projects';
             FieldClass = FlowField;
-            CalcFormula = count("BCX Translation Project" where(Status = const(Open), "Project Code" = field("Project Filter")));
         }
         field(30; "Released Projects"; Integer)
         {
+            CalcFormula = count("BCX Translation Project" where(Status = const(Released), "Project Code" = field("Project Filter")));
             Caption = 'Released Projects';
             FieldClass = FlowField;
-            CalcFormula = count("BCX Translation Project" where(Status = const(Released), "Project Code" = field("Project Filter")));
         }
         field(40; "Finished Projects"; Integer)
         {
+            CalcFormula = count("BCX Translation Project" where(Status = const(Released), "Project Code" = field("Project Filter")));
             Caption = 'Finished Projects';
             FieldClass = FlowField;
-            CalcFormula = count("BCX Translation Project" where(Status = const(Released), "Project Code" = field("Project Filter")));
         }
         field(50; "Projects this Month"; Integer)
         {
+            CalcFormula = count("BCX Translation Project" where("Creation Date" = field("Month Date Filter"), "Project Code" = field("Project Filter")));
             Caption = 'Projects this Month';
             FieldClass = FlowField;
-            CalcFormula = count("BCX Translation Project" where("Creation Date" = field("Month Date Filter"), "Project Code" = field("Project Filter")));
         }
         field(60; "Total Projects"; Integer)
         {
+            CalcFormula = count("BCX Translation Project" where("Project Code" = field("Project Filter")));
             Caption = 'Total Projects';
             FieldClass = FlowField;
-            CalcFormula = count("BCX Translation Project" where("Project Code" = field("Project Filter")));
         }
         field(100; "Month Date Filter"; Date)
         {

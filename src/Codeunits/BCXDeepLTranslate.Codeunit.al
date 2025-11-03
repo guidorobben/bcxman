@@ -4,14 +4,14 @@ codeunit 78607 "BCX DeepL Translate"
     var
         Setup: Record "BCX Translation Setup";
         HttpClient: HttpClient;
+        Content: HttpContent;
+        Headers: HttpHeaders;
         Request: HttpRequestMessage;
         Response: HttpResponseMessage;
-        Headers: HttpHeaders;
-        Content: HttpContent;
-        Payload: JsonObject;
         Texts: JsonArray;
-        TmpSrc, TmpTgt : Text;
+        Payload: JsonObject;
         ResponseText: Text;
+        TmpSrc, TmpTgt : Text;
     begin
         // Short-circuit when source == target
         if (inSourceLang = inTargetLang) then begin
@@ -89,13 +89,13 @@ codeunit 78607 "BCX DeepL Translate"
     local procedure ParseDeepLResponse(JsonText: Text): Text
     var
         Helper: Codeunit "BCX XML Helpers";
-        Tok: JsonToken;
-        RootObj: JsonObject;
-        TranslationsTok: JsonToken;
         TranslationsArr: JsonArray;
-        FirstTranslationTok: JsonToken;
         FirstTranslationObj: JsonObject;
+        RootObj: JsonObject;
+        FirstTranslationTok: JsonToken;
         TextTok: JsonToken;
+        Tok: JsonToken;
+        TranslationsTok: JsonToken;
         ResultTxt: Text;
     begin
         if not Tok.ReadFrom(JsonText) then

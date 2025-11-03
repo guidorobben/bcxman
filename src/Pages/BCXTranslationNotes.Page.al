@@ -1,10 +1,10 @@
 #pragma implicitwith disable
 page 78604 "BCX Translation Notes"
 {
-    PageType = Listpart;
-    SourceTable = "BCX Translation Notes";
     Caption = 'Translation Notes';
     Editable = false;
+    PageType = ListPart;
+    SourceTable = "BCX Translation Notes";
 
     layout
     {
@@ -14,29 +14,29 @@ page 78604 "BCX Translation Notes"
             {
                 field(From; Rec.From)
                 {
+                    ApplicationArea = All;
                     Caption = 'From';
                     ToolTip = 'The sender of the note.';
-                    ApplicationArea = All;
 
                 }
                 field(Annotates; Rec.Annotates)
                 {
+                    ApplicationArea = All;
                     Caption = 'Annotates';
                     ToolTip = 'The person who annotated the note.';
-                    ApplicationArea = All;
 
                 }
                 field(Note; Rec.Note)
                 {
+                    ApplicationArea = All;
                     Caption = 'Note';
                     ToolTip = 'The content of the note.';
-                    ApplicationArea = All;
                 }
                 field(Priority; Rec.Priority)
                 {
+                    ApplicationArea = All;
                     Caption = 'Priority';
                     ToolTip = 'The priority of the note.';
-                    ApplicationArea = All;
                     Visible = false;
                 }
             }

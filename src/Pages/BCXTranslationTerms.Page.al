@@ -1,13 +1,13 @@
 #pragma implicitwith disable
 page 78606 "BCX Translation terms"
 {
-    Caption = 'Translation Terms';
-    PageType = List;
-    SourceTable = "BCX Translation Term";
     AutoSplitKey = true;
-    ShowFilter = false;
-    LinksAllowed = false;
+    Caption = 'Translation Terms';
     DataCaptionFields = "Project Code", "Target Language";
+    LinksAllowed = false;
+    PageType = List;
+    ShowFilter = false;
+    SourceTable = "BCX Translation Term";
 
     layout
     {
@@ -42,14 +42,14 @@ page 78606 "BCX Translation terms"
             {
                 ApplicationArea = All;
                 Caption = 'Copy From General Terms';
-                ToolTip = 'Copy translation terms from the general terms list.';
                 Image = ReminderTerms;
                 Promoted = true;
-                PromotedOnly = true;
-                PromotedIsBig = true;
                 PromotedCategory = Process;
+                PromotedIsBig = true;
+                PromotedOnly = true;
+                ToolTip = 'Copy translation terms from the general terms list.';
 
-                trigger OnAction();
+                trigger OnAction()
                 var
                     GenTransTerm: Record "BCX Gen. Translation Term";
                     TransTerm: Record "BCX Translation Term";
@@ -67,14 +67,14 @@ page 78606 "BCX Translation terms"
             {
                 ApplicationArea = All;
                 Caption = 'Add to General Terms';
-                ToolTip = 'Add the current term to the general terms list.';
-                Promoted = true;
-                PromotedOnly = true;
-                PromotedIsBig = true;
-                PromotedCategory = Process;
                 Image = AddToHome;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                PromotedOnly = true;
+                ToolTip = 'Add the current term to the general terms list.';
 
-                trigger OnAction();
+                trigger OnAction()
                 var
                     GenTransTerm: Record "BCX Gen. Translation Term";
                 begin

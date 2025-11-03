@@ -1,10 +1,10 @@
 #pragma implicitwith disable
 page 78610 "BCX AL Logo FactBox"
 {
+    Caption = 'AL Translation Tool';
+    Editable = false;
     PageType = CardPart;
     SourceTable = "BCX Translation Setup";
-    Editable = false;
-    Caption = 'AL Translation Tool';
 
     layout
     {

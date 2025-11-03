@@ -1,10 +1,10 @@
 #pragma implicitwith disable
 page 78605 "BCX Trans Target Factbox"
 {
-    PageType = CardPart;
-    SourceTable = "BCX Translation Target";
     Caption = 'Translation Target Factbox';
     Editable = false;
+    PageType = CardPart;
+    SourceTable = "BCX Translation Target";
 
     layout
     {
@@ -15,30 +15,30 @@ page 78605 "BCX Trans Target Factbox"
                 ShowCaption = false;
                 field(Instances; Instances)
                 {
+                    ApplicationArea = All;
                     Caption = 'Instances';
                     ToolTip = 'Number of instances of this target language in the translation source for the selected project.';
-                    ApplicationArea = All;
                 }
             }
             group(Totals)
             {
                 field(TotalCaptions; TotalCaptions)
                 {
+                    ApplicationArea = All;
                     Caption = 'Total Captions';
                     ToolTip = 'Total number of captions in the translation target for the selected project.';
-                    ApplicationArea = all;
                 }
                 field(TotalMissingTranslations; TotalMissingTranslations)
                 {
+                    ApplicationArea = All;
                     Caption = 'Total Missing Translations';
                     ToolTip = 'Total number of missing translations in the translation target for the selected project.';
-                    ApplicationArea = all;
                 }
                 field(TotalMissingCaptions; TotalMissingCaptions)
                 {
+                    ApplicationArea = All;
                     Caption = 'Total Missing Captions';
                     ToolTip = 'Total number of missing captions in the translation target for the selected project.';
-                    ApplicationArea = all;
                 }
             }
         }

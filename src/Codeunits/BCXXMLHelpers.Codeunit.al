@@ -15,8 +15,8 @@ codeunit 78606 "BCX XML Helpers"
 
     procedure GetAttr(Element: XmlElement; Name: Text): Text
     var
-        Attrs: XmlAttributeCollection;
         Attr: XmlAttribute;
+        Attrs: XmlAttributeCollection;
     begin
         // Case-insensitive attribute lookup (returns '' if not found)
         if not Element.HasAttributes() then
@@ -40,8 +40,8 @@ codeunit 78606 "BCX XML Helpers"
 
     procedure TryGetFirstChildElement(Element: XmlElement; LocalName: Text; NamespaceUri: Text; var ChildElement: XmlElement): Boolean
     var
-        NL: XmlNodeList;
         N: XmlNode;
+        NL: XmlNodeList;
     begin
         GetChildElements(Element, LocalName, NamespaceUri, NL);
         if NL.Count() = 0 then
@@ -77,8 +77,8 @@ codeunit 78606 "BCX XML Helpers"
 
     procedure StripCommonBOMs(var Txt: Text)
     var
-        First3: Text;
         First1: Text;
+        First3: Text;
     begin
         // Remove the common CP1252-decoded BOM sequence 'ï»¿'
         if StrLen(Txt) >= 3 then begin

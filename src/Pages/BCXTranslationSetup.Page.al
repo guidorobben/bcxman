@@ -1,13 +1,13 @@
 page 78607 "BCX Translation Setup"
 {
-    PageType = Card;
     ApplicationArea = All;
-    UsageCategory = Administration;
-    SourceTable = "BCX Translation Setup";
     Caption = 'Translation Setup';
-    InsertAllowed = false;
     DeleteAllowed = false;
+    InsertAllowed = false;
     LinksAllowed = false;
+    PageType = Card;
+    SourceTable = "BCX Translation Setup";
+    UsageCategory = Administration;
 
     layout
     {
@@ -24,7 +24,7 @@ page 78607 "BCX Translation Setup"
             }
             group("Translate Tools")
             {
-                group("Google")
+                group(Google)
                 {
                     ShowCaption = false;
 
@@ -34,41 +34,41 @@ page 78607 "BCX Translation Setup"
                         ToolTip = 'Use the free Google API for translation. The limitation is that it is only possible to access the API a limited number of times each hour.';
                     }
                 }
-                group("ChatGPT")
+                group(ChatGPT)
                 {
                     ShowCaption = false;
 
-                    field("Use ChatGPT"; Rec."Use OpenAI") 
-                    { 
-                        ToolTip = 'Use the OpenAI API for translation.'; 
+                    field("Use ChatGPT"; Rec."Use OpenAI")
+                    {
                         ApplicationArea = All;
+                        ToolTip = 'Use the OpenAI API for translation.';
                     }
                     field("ChatGPT API Key"; Rec."OpenAI API Key")
                     {
-                        ToolTip = 'API key for accessing the OpenAI API.';
                         ApplicationArea = All;
                         ExtendedDatatype = Masked;
+                        ToolTip = 'API key for accessing the OpenAI API.';
 
                     }
                     field("ChatGPT Model"; Rec."OpenAI Model")
                     {
-                        ToolTip = 'Model to use for the OpenAI API.';
                         ApplicationArea = All;
+                        ToolTip = 'Model to use for the OpenAI API.';
                     }
                 }
-                group("DeepL")
+                group(DeepL)
                 {
                     ShowCaption = false;
-                    field("Use DeepL"; Rec."Use DeepL") 
-                    { 
-                        ToolTip = 'Use the DeepL API for translation.'; 
+                    field("Use DeepL"; Rec."Use DeepL")
+                    {
                         ApplicationArea = All;
+                        ToolTip = 'Use the DeepL API for translation.';
                     }
                     field("DeepL API Key"; Rec."DeepL API Key")
                     {
-                        ToolTip = 'API key for accessing the DeepL API.';
                         ApplicationArea = All;
                         ExtendedDatatype = Masked;
+                        ToolTip = 'API key for accessing the DeepL API.';
 
                     }
                 }
@@ -85,25 +85,25 @@ page 78607 "BCX Translation Setup"
         {
             action("About Al Translation Tool")
             {
+                ApplicationArea = All;
                 Caption = 'About AL Translation Tool';
-                ToolTip = 'Learn more about the AL Translation Tool.';
-                RunObject = page "BCX About AL Translation Tool";
                 Image = AboutNav;
                 Promoted = true;
-                PromotedOnly = true;
                 PromotedCategory = Process;
-                ApplicationArea = All;
+                PromotedOnly = true;
+                RunObject = page "BCX About AL Translation Tool";
+                ToolTip = 'Learn more about the AL Translation Tool.';
             }
 
             action("Initialize ISO Languages")
             {
+                ApplicationArea = All;
                 Caption = 'Initialize ISO Languages';
-                ToolTip = 'Initialize or update the ISO language codes in the Language table based on standard mappings.';
                 Image = Language;
                 Promoted = true;
-                PromotedOnly = true;
                 PromotedCategory = Process;
-                ApplicationArea = All;
+                PromotedOnly = true;
+                ToolTip = 'Initialize or update the ISO language codes in the Language table based on standard mappings.';
 
                 trigger OnAction()
                 begin
@@ -114,8 +114,8 @@ page 78607 "BCX Translation Setup"
     }
     trigger OnOpenPage()
     begin
-        if not Rec.get() then begin
-            Rec.init();
+        if not Rec.Get() then begin
+            Rec.Init();
             Rec.Insert();
         end;
 
@@ -125,12 +125,12 @@ page 78607 "BCX Translation Setup"
 
     procedure UpdateAllLanguages()
     var
-        Lang: Record "Language";
+        Lang: Record Language;
         Map: Dictionary of [Text, Text];
-        IsoTxt: Text;
-        Updated: Integer;
         Missing: Integer;
+        Updated: Integer;
         CodeTxt: Text;
+        IsoTxt: Text;
     begin
         InitMap(Map);
 
@@ -139,8 +139,8 @@ page 78607 "BCX Translation Setup"
                 CodeTxt := Format(Lang.Code);
                 if Map.ContainsKey(CodeTxt) then begin
                     Map.Get(CodeTxt, IsoTxt);
-                    if Lang."BCX Iso Code" <> IsoTxt then begin
-                        Lang.Validate("BCX Iso Code", IsoTxt);
+                    if Lang."BCX ISO code" <> IsoTxt then begin
+                        Lang.Validate("BCX ISO code", IsoTxt);
                         Lang.Modify(true);
                         Updated += 1;
                     end;
