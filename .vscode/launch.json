@@ -2,6 +2,23 @@
     "version": "0.2.0",
     "configurations": [
          {
+            "name": "tm2023w2v1-nl",
+            "request": "launch",
+            "type": "al",
+            "environmentType": "OnPrem",
+            "server": "http://tm2023w2v1-nl",
+            "serverInstance": "BC",
+            "authentication": "UserPassword",
+            "startupObjectId": 83980,
+            "startupObjectType": "Page",
+            "launchBrowser": true,
+            "enableLongRunningSqlStatements": true,
+            "enableSqlInformationDebugger": true,
+            "tenant": "default",
+            "schemaUpdateMode": "ForceSync",
+            "breakOnError": "ExcludeTry"
+        },
+         {
             "type":  "al",
             "request":  "launch",
             "name":  "Local Sandbox (bcxman)",
