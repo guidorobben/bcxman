@@ -16,54 +16,44 @@ page 78600 "BCX Trans Project List"
             {
                 field("Project Code"; Rec."Project Code")
                 {
-                    ApplicationArea = All;
                     AssistEdit = true;
                     ToolTip = 'Specifies the unique code for the translation project.';
                 }
                 field("Project Name"; Rec."Project Name")
                 {
-                    ApplicationArea = All;
                     ToolTip = 'The name of the translation project.';
 
                 }
                 field(Status; Rec.Status)
                 {
-                    ApplicationArea = All;
                     ToolTip = 'Open Projects which means projects in process - Released Projects which means sent to customer, but not finished - Finished Projects which means sent to customer and done for now';
                 }
                 field("NAV Version"; Rec."NAV Version")
                 {
-                    ApplicationArea = All;
                     ToolTip = 'The NAV version for the translation project.';
                 }
                 field("File Name"; Rec."File Name")
                 {
-                    ApplicationArea = All;
                     ToolTip = 'The name of the file associated with the translation project.';
                 }
                 field("Source Language"; Rec."Source Language")
                 {
-                    ApplicationArea = All;
                     ToolTip = 'The source language for the translation project.';
                 }
                 field("Source Language ISO code"; Rec."Source Language ISO code")
                 {
-                    ApplicationArea = All;
                     ToolTip = 'The ISO code of the source language for the translation project.';
                 }
                 field("Created By"; Rec."Created By")
                 {
-                    ApplicationArea = All;
                     ToolTip = 'The user who created the translation project.';
                 }
                 field("Creation Date"; Rec."Creation Date")
                 {
-                    ApplicationArea = All;
                     ToolTip = 'The date when the translation project was created.';
                 }
                 field("Base Translation Imported"; Rec."Base Translation Imported")
                 {
-                    ApplicationArea = All;
                     ToolTip = 'Indicates whether the base translation has been imported for the project.';
                 }
             }
@@ -76,7 +66,6 @@ page 78600 "BCX Trans Project List"
         {
             action("Import Project")
             {
-                ApplicationArea = All;
                 Caption = 'Import Project';
                 Image = ImportCodes;
                 Promoted = true;
@@ -94,7 +83,6 @@ page 78600 "BCX Trans Project List"
 
             action("Import Source")
             {
-                ApplicationArea = All;
                 Caption = 'Import Source';
                 Image = ImportCodes;
                 Promoted = true;
@@ -137,7 +125,6 @@ page 78600 "BCX Trans Project List"
             }
             action("Target Languages")
             {
-                ApplicationArea = All;
                 Caption = 'Target Languages';
                 Image = Language;
                 Promoted = true;
@@ -151,7 +138,6 @@ page 78600 "BCX Trans Project List"
             }
             action("Translation Source")
             {
-                ApplicationArea = All;
                 Caption = 'Translation Source';
                 Image = SourceDocLine;
                 Promoted = true;
@@ -163,7 +149,6 @@ page 78600 "BCX Trans Project List"
             }
             action("General Translation Terms")
             {
-                ApplicationArea = All;
                 Caption = 'General Translation Terms';
                 Image = BeginningText;
                 Promoted = true;
@@ -176,7 +161,6 @@ page 78600 "BCX Trans Project List"
             }
             action("All Translation Targets")
             {
-                ApplicationArea = All;
                 Caption = 'All Translation Targets';
                 Image = Translate;
                 Promoted = true;

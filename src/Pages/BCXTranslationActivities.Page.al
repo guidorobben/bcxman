@@ -34,12 +34,12 @@ page 78613 "BCX Translation Activities"
                 field("Projects this Month"; Rec."Projects this Month")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Projects this Month - number of projects with activity this month';
+                    ToolTip = 'Projects this Month - number of projects with activity this month.';
                 }
                 field("Total Projects"; Rec."Total Projects")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Total Projects - total number of projects in the system';
+                    ToolTip = 'Total Projects - total number of projects in the system.';
                 }
             }
         }
@@ -55,7 +55,7 @@ page 78613 "BCX Translation Activities"
     begin
         if not Rec.Get() then begin
             Rec.Init();
-            Rec.Insert();
+            Rec.Insert(false);
         end;
         DateFilterTxt := StrSubstNo(DateFilterLbl, CalcDate('<-CM>', Today()), Today());
         Rec.SetFilter("Month Date Filter", DateFilterTxt);

@@ -18,22 +18,18 @@ page 78608 "BCX Gen. Translation Terms"
             {
                 field("Apply Pre-Translation"; Rec."Apply Pre-Translation")
                 {
-                    ApplicationArea = All;
                     ToolTip = 'If checked, the term is used pre-translation. Leave translation empty to use the term as is.';
                 }
                 field("Target Language"; Rec."Target Language")
                 {
-                    ApplicationArea = All;
                     ToolTip = 'Specifies the target language for the translation term.';
                 }
                 field(Term; Rec.Term)
                 {
-                    ApplicationArea = All;
                     ToolTip = 'Enter the term to hardcode for translation. E.g. ''Journal'' must be translated to ''Worksheet''. Every instance of the term will be replaced with the translation.';
                 }
                 field(Translation; Rec.Translation)
                 {
-                    ApplicationArea = All;
                     ToolTip = 'Enter the translation to be inserted for the term. E.g. ''Journal'' must be translated to ''Worksheet''. Every instance of the term will be replaced with the translation.';
                 }
             }

@@ -8,16 +8,19 @@ table 78605 "BCX Translation Term"
     {
         field(10; "Project Code"; Code[10])
         {
+            AllowInCustomizations = AsReadOnly;
             Caption = 'Project Code';
             Editable = false;
         }
         field(20; "Target Language"; Code[10])
         {
+            AllowInCustomizations = AsReadOnly;
             Caption = 'Target Language';
             Editable = false;
         }
         field(30; "Line No."; Integer)
         {
+            AllowInCustomizations = AsReadOnly;
             Caption = 'Line No.';
         }
         field(40; Term; Text[250])
