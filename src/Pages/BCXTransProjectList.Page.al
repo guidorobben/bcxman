@@ -105,8 +105,8 @@ page 78600 "BCX Trans Project List"
                     TransNotes.SetRange("Project Code", Rec."Project Code");
                     if not TransSource.IsEmpty() then
                         if Confirm(DeleteWarningTxt, false, Rec."Project Code") then begin
-                            TransSource.DeleteAll();
-                            TransNotes.DeleteAll();
+                            TransSource.DeleteAll(false);
+                            TransNotes.DeleteAll(false);
                         end else
                             exit;
                     if not File.UploadIntoStream('Select source XLIFF file', '', 'Xliff files (*.xlf;*.xliff)|*.xlf;*.xliff', FileName, InS) then

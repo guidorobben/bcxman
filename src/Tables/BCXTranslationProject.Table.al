@@ -143,22 +143,21 @@ table 78600 "BCX Translation Project"
         BCXTranslationTerm: Record "BCX Translation Term";
     begin
         BCXTranslationSource.SetRange("Project Code", "Project Code");
-        BCXTranslationSource.DeleteAll();
+        BCXTranslationSource.DeleteAll(false);
 
         BCXTranslationTarget.SetRange("Project Code", "Project Code");
-        BCXTranslationTarget.DeleteAll();
+        BCXTranslationTarget.DeleteAll(false);
 
         BCXTargetLanguage.SetRange("Project Code", "Project Code");
-        BCXTargetLanguage.DeleteAll();
+        BCXTargetLanguage.DeleteAll(false);
 
         BCXBaseTranslationTarget.SetRange("Project Code", "Project Code");
-        BCXBaseTranslationTarget.DeleteAll();
+        BCXBaseTranslationTarget.DeleteAll(false);
 
         BCXTranslationNote.SetRange("Project Code", "Project Code");
-        BCXTranslationNote.DeleteAll();
+        BCXTranslationNote.DeleteAll(false);
 
         BCXTranslationTerm.SetRange("Project Code", "Project Code");
-        BCXTranslationTerm.DeleteAll();
+        BCXTranslationTerm.DeleteAll(false);
     end;
-
 }

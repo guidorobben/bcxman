@@ -18,7 +18,7 @@ page 78607 "BCX Translation Setup"
                 Caption = 'General';
                 field("Default Source Language code"; Rec."Default Source Language code")
                 {
-                    ToolTip = 'Source Languange to be defaulted on every project';
+                    ToolTip = 'Source Languange to be defaulted on every project.';
                 }
             }
             group("Translate Tools")

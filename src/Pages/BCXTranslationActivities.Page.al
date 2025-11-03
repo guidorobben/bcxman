@@ -15,17 +15,17 @@ page 78613 "BCX Translation Activities"
                 field("Open Projects"; Rec."Open Projects")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Open Projects - not sent to customer';
+                    ToolTip = 'Open Projects - not sent to customer.';
                 }
                 field("Released Projects"; Rec."Released Projects")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Released Projects - sent to customer, but not finished';
+                    ToolTip = 'Released Projects - sent to customer, but not finished.';
                 }
                 field("Finished Projects"; Rec."Finished Projects")
                 {
                     ApplicationArea = All;
-                    ToolTip = 'Finished Projects - sent to customer and done for now';
+                    ToolTip = 'Finished Projects - sent to customer and done for now.';
                 }
             }
             cuegroup(Totals)

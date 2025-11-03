@@ -186,11 +186,11 @@ codeunit 78605 "BCX Xliff Parser"
                     BCXTranslationNote.Note := CopyStr(NoteText, 1, MaxStrLen(BCXTranslationNote.Note));
                     if ((BCXTranslationNote.Note <> '') and ((BCXTranslationSource."Field Name" = '') or (BCXTranslationNote.From = 'Xliff Generator'))) then
                         BCXTranslationSource."Field Name" := BCXTranslationNote.Note;
-                    if not BCXTranslationNote.Insert() then
-                        BCXTranslationNote.Modify();
+                    if not BCXTranslationNote.Insert(false) then
+                        BCXTranslationNote.Modify(false);
                 end;
-                if not BCXTranslationSource.Insert() then
-                    BCXTranslationSource.Modify();
+                if not BCXTranslationSource.Insert(false) then
+                    BCXTranslationSource.Modify(false);
             end else
                 if Mode = 'BaseTarget' then begin
                     BCXBaseTranslationTarget.Init();
@@ -222,11 +222,11 @@ codeunit 78605 "BCX Xliff Parser"
                         BCXBaseTranslationNotes.Note := CopyStr(NoteText, 1, MaxStrLen(BCXBaseTranslationNotes.Note));
                         if ((BCXBaseTranslationNotes.Note <> '') and ((BCXBaseTranslationTarget."Field Name" = '') or (BCXBaseTranslationNotes.From = 'Xliff Generator'))) then
                             BCXBaseTranslationTarget."Field Name" := BCXBaseTranslationNotes.Note;
-                        if not BCXBaseTranslationNotes.Insert() then
-                            BCXBaseTranslationNotes.Modify();
+                        if not BCXBaseTranslationNotes.Insert(false) then
+                            BCXBaseTranslationNotes.Modify(false);
 
-                        if not BCXBaseTranslationTarget.Insert() then
-                            BCXBaseTranslationTarget.Modify();
+                        if not BCXBaseTranslationTarget.Insert(false) then
+                            BCXBaseTranslationTarget.Modify(false);
                     end;
                 end else begin // Mode = 'Target'
                     BCXTranslationTarget.Init();
@@ -277,16 +277,14 @@ codeunit 78605 "BCX Xliff Parser"
                         BCXTranslationNote.Note := CopyStr(NoteText, 1, MaxStrLen(BCXTranslationNote.Note));
                         if ((BCXTranslationNote.Note <> '') and ((BCXTranslationTarget."Field Name" = '') or (BCXTranslationNote.From = 'Xliff Generator'))) then
                             BCXTranslationTarget."Field Name" := BCXTranslationNote.Note;
-                        if not BCXTranslationNote.Insert() then
-                            BCXTranslationNote.Modify();
+                        if not BCXTranslationNote.Insert(false) then
+                            BCXTranslationNote.Modify(false);
                     end;
 
-                    if not BCXTranslationTarget.Insert() then
-                        BCXTranslationTarget.Modify();
-
+                    if not BCXTranslationTarget.Insert(false) then
+                        BCXTranslationTarget.Modify(false);
                 end;
 #pragma warning restore AA0022
         end;
     end;
-
 }

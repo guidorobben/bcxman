@@ -195,7 +195,7 @@ page 78603 "BCX Translation Target List"
                         TransTarget.Reset();
                     TransTarget.SetRange(Target, '');
                     if Confirm(WarningTxt) then
-                        TransTarget.ModifyAll(Translate, true);
+                        TransTarget.ModifyAll(Translate, true, false);
                     CurrPage.Update(false);
 
                 end;
@@ -232,7 +232,7 @@ page 78603 "BCX Translation Target List"
                     if TransTarget.Count() = 1 then
                         TransTarget.Reset();
                     if Confirm(WarningTxt) then
-                        TransTarget.ModifyAll(Translate, false);
+                        TransTarget.ModifyAll(Translate, false, false);
                     CurrPage.Update(false);
                 end;
             }
@@ -254,7 +254,7 @@ page 78603 "BCX Translation Target List"
                     //if TransTarget.Count = 1 then
                     //    TransTarget.Reset();
                     if Confirm(WarningTxt) then
-                        TransTarget.ModifyAll(Target, '');
+                        TransTarget.ModifyAll(Target, '', false);
                 end;
             }
             action("Translation Terms")
@@ -378,7 +378,7 @@ page 78603 "BCX Translation Target List"
                     end else
                         BCXTranslationTarget.Translate := true;
 
-                    if BCXTranslationTarget.Insert() then;
+                    if BCXTranslationTarget.Insert(false) then;
                 until BCXTranslationSource.Next() = 0;
         end
         else begin
@@ -394,13 +394,12 @@ page 78603 "BCX Translation Target List"
                                 BCXTranslationTarget.TransferFields(BCXTranslationSource);
                                 BCXTranslationTarget."Target Language" := BCXTargetLanguage."Target Language";
                                 BCXTranslationTarget."Target Language ISO code" := BCXTargetLanguage."Target Language ISO code";
-                                if BCXTranslationTarget.Insert() then;
+                                if BCXTranslationTarget.Insert(false) then;
                             until BCXTranslationSource.Next() = 0;
                     end;
                 until BCXTargetLanguage.Next() = 0;
         end;
     end;
-
 
     local procedure CopyAll(inOnlyEmpty: Boolean)
     var
@@ -428,7 +427,7 @@ page 78603 "BCX Translation Target List"
                 CopyDialog.Update(2, TotalCount);
                 BCXTranslationTarget.Target := BCXTranslationTarget.Source;
                 BCXTranslationTarget.Translate := false;
-                BCXTranslationTarget.Modify();
+                BCXTranslationTarget.Modify(false);
                 Commit(); //Save progress
             until BCXTranslationTarget.Next() = 0;
 
@@ -474,7 +473,7 @@ page 78603 "BCX Translation Target List"
                 BCXTranslationTarget.Target :=
                   ReplaceTermInTranslation(BCXTranslationTarget."Target Language ISO code", BCXTranslationTarget.Target);
                 BCXTranslationTarget.Translate := false;
-                BCXTranslationTarget.Modify();
+                BCXTranslationTarget.Modify(false);
                 // Escape source for filter
                 BCXTranslationTarget2.Reset();
                 BCXTranslationTarget2.SetRange("Project Code", BCXTranslationProject."Project Code"); // keep within project
@@ -483,8 +482,8 @@ page 78603 "BCX Translation Target List"
                 if inOnlyEmpty then
                     BCXTranslationTarget2.SetRange(Target, '');
 
-                BCXTranslationTarget2.ModifyAll(Translate, false);
-                BCXTranslationTarget2.ModifyAll(Target, BCXTranslationTarget.Target);
+                BCXTranslationTarget2.ModifyAll(Translate, false, false);
+                BCXTranslationTarget2.ModifyAll(Target, BCXTranslationTarget.Target, false);
 
                 Commit();
                 SelectLatestVersion();
@@ -555,7 +554,7 @@ page 78603 "BCX Translation Target List"
                     DuplicateBCXTranslationTarget.CopyFilters(Rec);
                     DuplicateBCXTranslationTarget.SetRange(Source, BCXTranslationTarget.Source);
                     DuplicateBCXTranslationTarget.SetRange(Target, '');
-                    DuplicateBCXTranslationTarget.ModifyAll(Target, TransBCXTranslationTarget.Target);
+                    DuplicateBCXTranslationTarget.ModifyAll(Target, TransBCXTranslationTarget.Target, false);
                     Counter += 1;
                 end;
             until BCXTranslationTarget.Next() = 0;
@@ -570,7 +569,7 @@ page 78603 "BCX Translation Target List"
         DeletedCounter: Integer;
         FinishedTxt: Label '%1 source captions updated. %2 obsolete targets deleted.', Comment = '%1 is the number of updated captions, %2 is the number of deleted obsolete targets';
     begin
-        BCXTranslationTarget.ModifyAll(Translate, false);
+        BCXTranslationTarget.ModifyAll(Translate, false, false);
         BCXTranslationSource.SetFilter("Project Code", Rec.GetFilter("Project Code"));
         if BCXTranslationSource.FindSet() then
             repeat
@@ -581,7 +580,7 @@ page 78603 "BCX Translation Target List"
                         if BCXTranslationTarget.Source <> BCXTranslationSource.Source then begin
                             BCXTranslationTarget.Source := BCXTranslationSource.Source;
                             BCXTranslationTarget.Translate := true;
-                            BCXTranslationTarget.Modify();
+                            BCXTranslationTarget.Modify(false);
                             Counter += 1;
                         end;
                     until BCXTranslationTarget.Next() = 0;
@@ -596,14 +595,12 @@ page 78603 "BCX Translation Target List"
                 BCXTranslationSource.SetRange("Project Code", BCXTranslationTarget."Project Code");
                 BCXTranslationSource.SetRange("Trans-Unit Id", BCXTranslationTarget."Trans-Unit Id");
                 if not BCXTranslationSource.FindFirst() then begin
-                    BCXTranslationTarget.Delete();
+                    BCXTranslationTarget.Delete(false);
                     DeletedCounter += 1;
                 end;
             until BCXTranslationTarget.Next() = 0;
+
         Message(FinishedTxt, Counter, DeletedCounter);
-
     end;
-
-
 }
 #pragma implicitwith restore

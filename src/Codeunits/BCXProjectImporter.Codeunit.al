@@ -166,7 +166,7 @@ codeunit 78604 "BCX Project Importer"
                     if TargetLanguageRec.FindFirst() then
                         BCXTargetLanguage."Target Language" := TargetLanguageRec.Code;
                 end;
-                BCXTargetLanguage.Insert();
+                BCXTargetLanguage.Insert(false);
             end;
 
             // If target-language equals source-language, we treat it as Ba se Target 

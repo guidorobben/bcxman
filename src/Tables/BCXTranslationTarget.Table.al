@@ -114,8 +114,8 @@ table 78602 "BCX Translation Target"
                 if not Confirm(QuestionTxt) then
                     exit;
             BCXTranslationTarget.SetFilter("Trans-Unit Id", '<>%1', "Trans-Unit Id");
-            BCXTranslationTarget.ModifyAll(Target, Target);
-            BCXTranslationTarget.ModifyAll(Translate, false);
+            BCXTranslationTarget.ModifyAll(Target, Target, false);
+            BCXTranslationTarget.ModifyAll(Translate, false, false);
         end;
         if Target <> '' then
             Translate := false;

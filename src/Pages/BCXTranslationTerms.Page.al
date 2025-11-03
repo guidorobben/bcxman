@@ -59,7 +59,7 @@ page 78606 "BCX Translation terms"
                         repeat
                             TransTerm.TransferFields(GenTransTerm);
                             TransTerm."Project Code" := CopyStr(Rec.GetFilter("Project Code"), 1, 10);
-                            if TransTerm.Insert() then;
+                            if TransTerm.Insert(false) then;
                         until GenTransTerm.Next() = 0;
                 end;
             }
@@ -79,8 +79,8 @@ page 78606 "BCX Translation terms"
                     GenTransTerm: Record "BCX Gen. Translation Term";
                 begin
                     GenTransTerm.TransferFields(Rec);
-                    if not GenTransTerm.Insert() then
-                        GenTransTerm.Modify();
+                    if not GenTransTerm.Insert(false) then
+                        GenTransTerm.Modify(false);
                 end;
             }
         }
