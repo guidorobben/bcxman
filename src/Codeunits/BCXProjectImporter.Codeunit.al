@@ -6,14 +6,14 @@ codeunit 78604 "BCX Project Importer"
 
     procedure ImportFromZip(ProjectCode: Code[20]; SourceLangIso: Text[10]; Overwrite: Boolean)
     var
-        BaseNotes: Record "BCX Base Translation Notes";
-        TransBaseTarget: Record "BCX Base Translation Target";
-        TransTargetLanguage: Record "BCX Target Language";
-        TransNotes: Record "BCX Translation Notes";
-        TransProject: Record "BCX Translation Project";
-        TransSource: Record "BCX Translation Source";
-        TransTarget: Record "BCX Translation Target";
-        TransTerm: Record "BCX Translation Term";
+        BCXBaseTranslationNotes: Record "BCX Base Translation Notes";
+        BCXBaseTranslationTarget: Record "BCX Base Translation Target";
+        BCXTargetLanguage: Record "BCX Target Language";
+        BCXTranslationNotes: Record "BCX Translation Note";
+        BCXTranslationProject: Record "BCX Translation Project";
+        BCXTranslationSource: Record "BCX Translation Source";
+        BCXTranslationTarget: Record "BCX Translation Target";
+        BCXTranslationTerm: Record "BCX Translation Term";
 
         SourceLanguageRec: Record Language;
         TargetLanguageRec: Record Language;
@@ -23,7 +23,7 @@ codeunit 78604 "BCX Project Importer"
 
         IsXlf: Boolean;
         Dialog: Dialog;
-        EntryInS: InStream;
+        EntryInStream: InStream;
         InS: InStream;
         ImportedCnt: Integer;
         DeleteWarningTxt: Label 'This will delete all existing source and translations for project %1', Comment = 'Warning text when overwriting existing project, %1 is replaced with project code.';
@@ -40,33 +40,33 @@ codeunit 78604 "BCX Project Importer"
         if Overwrite then begin
             if (Confirm(DeleteWarningTxt, false, ProjectCode) = false) then
                 exit;
-            TransSource.SetRange("Project Code", ProjectCode);
-            if not TransSource.IsEmpty() then
-                TransSource.DeleteAll(false);
+            BCXTranslationSource.SetRange("Project Code", ProjectCode);
+            if not BCXTranslationSource.IsEmpty() then
+                BCXTranslationSource.DeleteAll(false);
 
-            TransTarget.SetRange("Project Code", ProjectCode);
-            if not TransTarget.IsEmpty() then
-                TransTarget.DeleteAll(false);
+            BCXTranslationTarget.SetRange("Project Code", ProjectCode);
+            if not BCXTranslationTarget.IsEmpty() then
+                BCXTranslationTarget.DeleteAll(false);
 
-            TransTargetLanguage.SetRange("Project Code", ProjectCode);
-            if not TransTargetLanguage.IsEmpty() then
-                TransTargetLanguage.DeleteAll(false);
+            BCXTargetLanguage.SetRange("Project Code", ProjectCode);
+            if not BCXTargetLanguage.IsEmpty() then
+                BCXTargetLanguage.DeleteAll(false);
 
-            TransBaseTarget.SetRange("Project Code", ProjectCode);
-            if not TransBaseTarget.IsEmpty() then
-                TransBaseTarget.DeleteAll(false);
+            BCXBaseTranslationTarget.SetRange("Project Code", ProjectCode);
+            if not BCXBaseTranslationTarget.IsEmpty() then
+                BCXBaseTranslationTarget.DeleteAll(false);
 
-            TransNotes.SetRange("Project Code", ProjectCode);
-            if not TransNotes.IsEmpty() then
-                TransNotes.DeleteAll(false);
+            BCXTranslationNotes.SetRange("Project Code", ProjectCode);
+            if not BCXTranslationNotes.IsEmpty() then
+                BCXTranslationNotes.DeleteAll(false);
 
-            BaseNotes.SetRange("Project Code", ProjectCode);
-            if not BaseNotes.IsEmpty() then
-                BaseNotes.DeleteAll(false);
+            BCXBaseTranslationNotes.SetRange("Project Code", ProjectCode);
+            if not BCXBaseTranslationNotes.IsEmpty() then
+                BCXBaseTranslationNotes.DeleteAll(false);
 
-            TransTerm.SetRange("Project Code", ProjectCode);
-            if not TransTerm.IsEmpty() then
-                TransTerm.DeleteAll(false);
+            BCXTranslationTerm.SetRange("Project Code", ProjectCode);
+            if not BCXTranslationTerm.IsEmpty() then
+                BCXTranslationTerm.DeleteAll(false);
         end;
 
         // Ask user for ZIP
@@ -78,8 +78,8 @@ codeunit 78604 "BCX Project Importer"
         Dialog.Open(StepTxt);
         DataCompression.GetEntryList(EntryNames);
 
-        TransProject.SetRange("Project Code", ProjectCode);
-        if (not TransProject.FindFirst()) then
+        BCXTranslationProject.SetRange("Project Code", ProjectCode);
+        if (not BCXTranslationProject.FindFirst()) then
             Error('Project %1 not found', ProjectCode);
 
         // First build list of files to import, source and list of targets
@@ -91,7 +91,7 @@ codeunit 78604 "BCX Project Importer"
 
             DataCompression.ExtractEntry(EntryName, TempBlob);
             // Create a fresh InStream to parse/import
-            TempBlob.CreateInStream(EntryInS);
+            TempBlob.CreateInStream(EntryInStream);
 
             // Classify the XLF: source vs base target vs normal target
             IsSource := false;
@@ -99,7 +99,7 @@ codeunit 78604 "BCX Project Importer"
             OriginalProjectName := '';
 
             // ClassifyXliff expects an InStream and will consume it
-            ClassifyXliff(EntryName, EntryInS, IsSource, SourceLangIso, TargetLangISO, OriginalProjectName);
+            ClassifyXliff(EntryName, EntryInStream, IsSource, SourceLangIso, TargetLangISO, OriginalProjectName);
 
             if IsSource then
                 SourceName := EntryName
@@ -112,24 +112,24 @@ codeunit 78604 "BCX Project Importer"
 
             DataCompression.ExtractEntry(SourceName, TempBlob);
 
-            TempBlob.CreateInStream(EntryInS);
+            TempBlob.CreateInStream(EntryInStream);
 
             // Read attributes from the source file (consumes stream)
-            ClassifyXliff(SourceName, EntryInS, IsSource, SourceLangIso, TargetLangISO, OriginalProjectName);
+            ClassifyXliff(SourceName, EntryInStream, IsSource, SourceLangIso, TargetLangISO, OriginalProjectName);
 
             // Update project with original name and source language
             if OriginalProjectName <> '' then
-                TransProject.Validate("Project Name", OriginalProjectName);
+                BCXTranslationProject.Validate("Project Name", OriginalProjectName);
 
             SourceLanguageRec.SetRange("BCX ISO code", SourceLangIso);
             if not SourceLanguageRec.FindFirst() then
                 Error('Iso code not set for Language %1', SourceLangIso);
-            TransProject.Validate("Source Language", SourceLanguageRec.Code);
-            TransProject.Modify(true);
+            BCXTranslationProject.Validate("Source Language", SourceLanguageRec.Code);
+            BCXTranslationProject.Modify(true);
 
             // Recreate stream for actual import (classification consumed it)
-            TempBlob.CreateInStream(EntryInS);
-            ImportSourceFromStream(ProjectCode, SourceName, EntryInS);
+            TempBlob.CreateInStream(EntryInStream);
+            ImportSourceFromStream(ProjectCode, SourceName, EntryInStream);
             ImportedCnt += 1;
             Dialog.Update(1, CopyStr(SourceName, 1, 50));
         end;
@@ -137,36 +137,36 @@ codeunit 78604 "BCX Project Importer"
         // Process remaining target/base-target files
         foreach EntryName in TargetsToProcess do begin
             DataCompression.ExtractEntry(EntryName, TempBlob);
-            TempBlob.CreateInStream(EntryInS);
+            TempBlob.CreateInStream(EntryInStream);
 
             // Classify to get target-language (consumes stream)
-            ClassifyXliff(EntryName, EntryInS, IsSource, SourceLangIso, TargetLangISO, OriginalProjectName);
+            ClassifyXliff(EntryName, EntryInStream, IsSource, SourceLangIso, TargetLangISO, OriginalProjectName);
 
             // Recreate stream for the import
-            TempBlob.CreateInStream(EntryInS);
+            TempBlob.CreateInStream(EntryInStream);
 
-            TransTargetLanguage.SetRange("Project Code", ProjectCode);
-            TransTargetLanguage.SetRange("Target Language ISO code", TargetLangISO);
-            if not TransTargetLanguage.FindFirst() then begin
-                TransTargetLanguage.Init();
-                TransTargetLanguage."Project Code" := ProjectCode;
-                TransTargetLanguage."Source Language" := SourceLanguageRec.Code;
-                TransTargetLanguage."Source Language ISO code" := SourceLangIso;
-                TransTargetLanguage."Target Language ISO code" := TargetLangISO;
+            BCXTargetLanguage.SetRange("Project Code", ProjectCode);
+            BCXTargetLanguage.SetRange("Target Language ISO code", TargetLangISO);
+            if not BCXTargetLanguage.FindFirst() then begin
+                BCXTargetLanguage.Init();
+                BCXTargetLanguage."Project Code" := ProjectCode;
+                BCXTargetLanguage."Source Language" := SourceLanguageRec.Code;
+                BCXTargetLanguage."Source Language ISO code" := SourceLangIso;
+                BCXTargetLanguage."Target Language ISO code" := TargetLangISO;
                 if TargetLangISO <> '' then begin
                     TargetLanguageRec.SetRange("BCX ISO code", TargetLangISO);
                     if TargetLanguageRec.FindFirst() then
-                        TransTargetLanguage."Target Language" := TargetLanguageRec.Code;
+                        BCXTargetLanguage."Target Language" := TargetLanguageRec.Code;
                 end;
-                TransTargetLanguage.Insert();
+                BCXTargetLanguage.Insert();
             end;
 
             // If target-language equals source-language, we treat it as Ba se Target 
             if (TargetLangISO <> '') and (TargetLangISO = SourceLangIso) then begin
-                ImportBaseTargetFromStream(ProjectCode, SourceLangIso, TargetLangISO, EntryName, EntryInS);
-                ImportTargetFromStream(ProjectCode, SourceLangIso, TargetLangISO, EntryName, EntryInS);      // Also import as normal target to have editable copy
+                ImportBaseTargetFromStream(ProjectCode, SourceLangIso, TargetLangISO, EntryName, EntryInStream);
+                ImportTargetFromStream(ProjectCode, SourceLangIso, TargetLangISO, EntryName, EntryInStream);      // Also import as normal target to have editable copy
             end else
-                ImportTargetFromStream(ProjectCode, SourceLangIso, TargetLangISO, EntryName, EntryInS);
+                ImportTargetFromStream(ProjectCode, SourceLangIso, TargetLangISO, EntryName, EntryInStream);
 
             ImportedCnt += 1;
             Dialog.Update(1, CopyStr(EntryName, 1, 50));
@@ -263,32 +263,31 @@ codeunit 78604 "BCX Project Importer"
 
     local procedure ImportSourceFromStream(ProjectCode: Code[20]; FileName: Text; var InS: InStream)
     var
-        TransProject: Record "BCX Translation Project";
-        XliffParser: Codeunit "BCX Xliff Parser";
+        BCXTranslationProject: Record "BCX Translation Project";
+        BCXXliffParser: Codeunit "BCX Xliff Parser";
     begin
         // Use the new code-based parser instead of the XmlPort
-        XliffParser.ImportSourceFromStream(ProjectCode, FileName, InS);
+        BCXXliffParser.ImportSourceFromStream(ProjectCode, FileName, InS);
 
         // Update the stored file name on the project 
-        if TransProject.Get(ProjectCode) then begin
-            TransProject.Validate("File Name", FileName);
-            TransProject.Modify(true);
+        if BCXTranslationProject.Get(ProjectCode) then begin
+            BCXTranslationProject.Validate("File Name", FileName);
+            BCXTranslationProject.Modify(true);
         end;
     end;
 
     local procedure ImportBaseTargetFromStream(ProjectCode: Code[20]; SrcLang: Text[10]; TgtLang: Text[10]; FileName: Text; var InS: InStream)
     var
-        XliffParser: Codeunit "BCX Xliff Parser";
+        BCXXliffParser: Codeunit "BCX Xliff Parser";
     begin
-        XliffParser.ImportBaseTargetFromStream(ProjectCode, SrcLang, TgtLang, FileName, InS);
+        BCXXliffParser.ImportBaseTargetFromStream(ProjectCode, SrcLang, TgtLang, FileName, InS);
     end;
 
 
     local procedure ImportTargetFromStream(ProjectCode: Code[20]; SrcLang: Text[10]; TgtLang: Text[10]; FileName: Text; var InS: InStream)
     var
-        XliffParser: Codeunit "BCX Xliff Parser";
+        BCXXliffParser: Codeunit "BCX Xliff Parser";
     begin
-        XliffParser.ImportTargetFromStream(ProjectCode, SrcLang, TgtLang, FileName, InS);
+        BCXXliffParser.ImportTargetFromStream(ProjectCode, SrcLang, TgtLang, FileName, InS);
     end;
-
 }

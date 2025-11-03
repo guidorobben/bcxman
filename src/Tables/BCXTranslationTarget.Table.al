@@ -92,23 +92,23 @@ table 78602 "BCX Translation Target"
     }
     procedure UpdateAllTargetInstances()
     var
-        TransTarget: Record "BCX Translation Target";
+        BCXTranslationTarget: Record "BCX Translation Target";
         Instances: Integer;
         QuestionTxt: Label 'Copy the Target to all other instances?';
     begin
-        TransTarget.Copy(Rec);
-        TransTarget.SetRange(Source, Source);
-        TransTarget.SetRange("Target Language", "Target Language");
-        Instances := TransTarget.Count();
+        BCXTranslationTarget.Copy(Rec);
+        BCXTranslationTarget.SetRange(Source, Source);
+        BCXTranslationTarget.SetRange("Target Language", "Target Language");
+        Instances := BCXTranslationTarget.Count();
         if Target = '' then
             exit;
         if Instances > 1 then begin
             if CurrFieldNo > 0 then
                 if not Confirm(QuestionTxt) then
                     exit;
-            TransTarget.SetFilter("Trans-Unit Id", '<>%1', "Trans-Unit Id");
-            TransTarget.ModifyAll(Target, Target);
-            TransTarget.ModifyAll(Translate, false);
+            BCXTranslationTarget.SetFilter("Trans-Unit Id", '<>%1', "Trans-Unit Id");
+            BCXTranslationTarget.ModifyAll(Target, Target);
+            BCXTranslationTarget.ModifyAll(Translate, false);
         end;
         if Target <> '' then
             Translate := false;

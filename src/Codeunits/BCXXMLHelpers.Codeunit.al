@@ -1,4 +1,4 @@
-codeunit 78606 "BCX XML Helpers"
+codeunit 78606 "BCX XML Helper"
 {
 
     procedure ReadXmlFromInStream(var InS: InStream; var XmlDoc: XmlDocument)

@@ -1,6 +1,7 @@
 
 page 78601 "BCX Translation Source List"
 {
+    Caption = 'Translation Source List';
     PageType = List;
     SourceTable = "BCX Translation Source";
 

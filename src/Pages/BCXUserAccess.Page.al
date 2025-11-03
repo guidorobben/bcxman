@@ -41,11 +41,11 @@ page 78612 "BCX User Access"
     }
     trigger OnOpenPage()
     var
-        UserAccess: Record "BCX User Access";
+        BCXUserAccess: Record "BCX User Access";
         NoAccessTxt: Label 'No Access';
     begin
-        UserAccess.SetRange("User Id", Rec."User Id");
-        if not UserAccess.IsEmpty() then
+        BCXUserAccess.SetRange("User Id", Rec."User Id");
+        if not BCXUserAccess.IsEmpty() then
             Error(NoAccessTxt)
     end;
 }

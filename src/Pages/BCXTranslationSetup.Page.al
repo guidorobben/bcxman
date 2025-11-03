@@ -18,19 +18,19 @@ page 78607 "BCX Translation Setup"
                 Caption = 'General';
                 field("Default Source Language code"; Rec."Default Source Language code")
                 {
-                    ApplicationArea = All;
                     ToolTip = 'Source Languange to be defaulted on every project';
                 }
             }
             group("Translate Tools")
             {
+                Caption = 'Translate Tools';
+
                 group(Google)
                 {
                     ShowCaption = false;
 
                     field("Use Free Google Translate"; Rec."Use Free Google Translate")
                     {
-                        ApplicationArea = All;
                         ToolTip = 'Use the free Google API for translation. The limitation is that it is only possible to access the API a limited number of times each hour.';
                     }
                 }
@@ -40,19 +40,16 @@ page 78607 "BCX Translation Setup"
 
                     field("Use ChatGPT"; Rec."Use OpenAI")
                     {
-                        ApplicationArea = All;
                         ToolTip = 'Use the OpenAI API for translation.';
                     }
                     field("ChatGPT API Key"; Rec."OpenAI API Key")
                     {
-                        ApplicationArea = All;
                         ExtendedDatatype = Masked;
                         ToolTip = 'API key for accessing the OpenAI API.';
 
                     }
                     field("ChatGPT Model"; Rec."OpenAI Model")
                     {
-                        ApplicationArea = All;
                         ToolTip = 'Model to use for the OpenAI API.';
                     }
                 }
@@ -61,12 +58,10 @@ page 78607 "BCX Translation Setup"
                     ShowCaption = false;
                     field("Use DeepL"; Rec."Use DeepL")
                     {
-                        ApplicationArea = All;
                         ToolTip = 'Use the DeepL API for translation.';
                     }
                     field("DeepL API Key"; Rec."DeepL API Key")
                     {
-                        ApplicationArea = All;
                         ExtendedDatatype = Masked;
                         ToolTip = 'API key for accessing the DeepL API.';
 
@@ -85,7 +80,6 @@ page 78607 "BCX Translation Setup"
         {
             action("About Al Translation Tool")
             {
-                ApplicationArea = All;
                 Caption = 'About AL Translation Tool';
                 Image = AboutNav;
                 Promoted = true;
@@ -97,7 +91,6 @@ page 78607 "BCX Translation Setup"
 
             action("Initialize ISO Languages")
             {
-                ApplicationArea = All;
                 Caption = 'Initialize ISO Languages';
                 Image = Language;
                 Promoted = true;
@@ -116,16 +109,14 @@ page 78607 "BCX Translation Setup"
     begin
         if not Rec.Get() then begin
             Rec.Init();
-            Rec.Insert();
+            Rec.Insert(false);
         end;
 
     end;
 
-
-
     procedure UpdateAllLanguages()
     var
-        Lang: Record Language;
+        Language: Record Language;
         Map: Dictionary of [Text, Text];
         Missing: Integer;
         Updated: Integer;
@@ -134,19 +125,19 @@ page 78607 "BCX Translation Setup"
     begin
         InitMap(Map);
 
-        if Lang.FindSet() then
+        if Language.FindSet() then
             repeat
-                CodeTxt := Format(Lang.Code);
+                CodeTxt := Format(Language.Code);
                 if Map.ContainsKey(CodeTxt) then begin
                     Map.Get(CodeTxt, IsoTxt);
-                    if Lang."BCX ISO code" <> IsoTxt then begin
-                        Lang.Validate("BCX ISO code", IsoTxt);
-                        Lang.Modify(true);
+                    if Language."BCX ISO code" <> IsoTxt then begin
+                        Language.Validate("BCX ISO code", IsoTxt);
+                        Language.Modify(true);
                         Updated += 1;
                     end;
                 end else
                     Missing += 1;
-            until Lang.Next() = 0;
+            until Language.Next() = 0;
 
         Message('Languages updated: %1. Rows with no mapping: %2.', Updated, Missing);
     end;

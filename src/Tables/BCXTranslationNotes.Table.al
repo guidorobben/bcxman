@@ -1,4 +1,4 @@
-table 78604 "BCX Translation Notes"
+table 78604 "BCX Translation Note"
 {
     Caption = 'BCX Translation Notes';
     DataClassification = AccountData;

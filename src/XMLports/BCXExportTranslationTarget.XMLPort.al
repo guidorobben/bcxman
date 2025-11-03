@@ -50,7 +50,7 @@ xmlport 78601 "BCX Export Translation Target"
                 {
                     trigger OnBeforePassVariable()
                     begin
-                        original := TransProject.OrginalAttr;
+                        original := BCXTranslationProject.OrginalAttr;
                     end;
                 }
                 textelement(body)
@@ -101,7 +101,7 @@ xmlport 78601 "BCX Export Translation Target"
                                 XmlName = 'target';
                             }
 
-                            tableelement(note; "BCX Translation Notes")
+                            tableelement(note; "BCX Translation Note")
                             {
                                 LinkFields = "Project Code" = field("Project Code"), "Trans-Unit Id" = field("Trans-Unit Id");
                                 LinkTable = Target;
@@ -109,7 +109,7 @@ xmlport 78601 "BCX Export Translation Target"
                                 fieldattribute(from; note.From) { }
                                 fieldattribute(annotates; note.Annotates) { }
                                 fieldattribute(priority; note.Priority) { }
-                                fieldattribute(note; note.Note) { }
+                                fieldattribute(note; Note.Note) { }
                             }
 
                         }
@@ -120,7 +120,7 @@ xmlport 78601 "BCX Export Translation Target"
     }
 
     var
-        TransProject: Record "BCX Translation Project";
+        BCXTranslationProject: Record "BCX Translation Project";
         ProjectCode: Code[20];
         EquivalentTransCode: Text[10];
         SourceTransCode: Text[10];
@@ -131,9 +131,9 @@ xmlport 78601 "BCX Export Translation Target"
         TargetLanguage: Text;
         TempFile: Text;
     begin
-        TransProject.Get(Target.GetFilter("Project Code"));
+        BCXTranslationProject.Get(Target.GetFilter("Project Code"));
         TargetLanguage := TargetTransCode;
-        TempFile := TransProject."File Name";
+        TempFile := BCXTranslationProject."File Name";
 
         if StrPos(LowerCase(TempFile), '.g.xlf') > 0 then
             currXMLport.Filename := CopyStr(TempFile, 1, StrPos(LowerCase(TempFile), '.g.xlf')) +

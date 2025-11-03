@@ -4,7 +4,7 @@ page 78604 "BCX Translation Notes"
     Caption = 'Translation Notes';
     Editable = false;
     PageType = ListPart;
-    SourceTable = "BCX Translation Notes";
+    SourceTable = "BCX Translation Note";
 
     layout
     {

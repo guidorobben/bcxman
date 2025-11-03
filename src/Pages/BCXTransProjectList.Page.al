@@ -104,7 +104,7 @@ page 78600 "BCX Trans Project List"
 
                 trigger OnAction()
                 var
-                    TransNotes: Record "BCX Translation Notes";
+                    TransNotes: Record "BCX Translation Note";
                     TransProject: Record "BCX Translation Project";
                     TransSource: Record "BCX Translation Source";
                     XliffParser: Codeunit "BCX Xliff Parser";
@@ -205,27 +205,26 @@ page 78600 "BCX Trans Project List"
 
     trigger OnNewRecord(BelowxRec: Boolean)
     var
-        TransSetup: Record "BCX Translation Setup";
-
+        BCXTranslationSetup: Record "BCX Translation Setup";
     begin
-        TransSetup.Get();
-        Rec.Validate("Source Language", TransSetup."Default Source Language code");
+        BCXTranslationSetup.Get();
+        Rec.Validate("Source Language", BCXTranslationSetup."Default Source Language code");
         Rec.Validate("NAV Version", Rec."NAV Version"::"Dynamics 365 Business Central");
     end;
 
     trigger OnOpenPage()
     var
-        UserAccess: Record "BCX User Access";
+        BCXUserAccess: Record "BCX User Access";
         FilterTxt: Text;
     begin
-        UserAccess.SetRange("User Id", UserId());
-        if UserAccess.FindSet() then
+        BCXUserAccess.SetRange("User Id", UserId());
+        if BCXUserAccess.FindSet() then
             repeat
                 if FilterTxt <> '' then
-                    FilterTxt += '|' + UserAccess."Project Code"
+                    FilterTxt += '|' + BCXUserAccess."Project Code"
                 else
-                    FilterTxt := UserAccess."Project Code";
-            until UserAccess.Next() = 0;
+                    FilterTxt := BCXUserAccess."Project Code";
+            until BCXUserAccess.Next() = 0;
         if FilterTxt <> '' then begin
             Rec.FilterGroup(1);
             Rec.SetFilter("Project Code", FilterTxt);

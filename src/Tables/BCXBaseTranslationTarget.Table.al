@@ -72,6 +72,7 @@ table 78610 "BCX Base Translation Target"
         field(130; Occurrencies; Integer)
         {
             CalcFormula = count("BCX Translation Target" where(Source = field(Source)));
+            Editable = false;
             Caption = 'Occurrencies';
             FieldClass = FlowField;
         }
@@ -89,24 +90,25 @@ table 78610 "BCX Base Translation Target"
             Clustered = true;
         }
     }
+
     procedure UpdateAllTargetInstances()
     var
-        TransTarget: Record "BCX Translation Target";
+        BCXTranslationTarget: Record "BCX Translation Target";
         Instances: Integer;
         QuestionTxt: Label 'Copy the Target to all other instances?';
     begin
-        TransTarget.Copy(Rec);
-        TransTarget.SetRange(Source, Source);
-        Instances := TransTarget.Count();
+        BCXTranslationTarget.Copy(Rec);
+        BCXTranslationTarget.SetRange(Source, Source);
+        Instances := BCXTranslationTarget.Count();
         if Target = '' then
             exit;
         if Instances > 1 then begin
             if CurrFieldNo > 0 then
                 if not Confirm(QuestionTxt) then
                     exit;
-            TransTarget.SetFilter("Trans-Unit Id", '<>%1', "Trans-Unit Id");
-            TransTarget.ModifyAll(Target, Target);
-            TransTarget.ModifyAll(Translate, false);
+            BCXTranslationTarget.SetFilter("Trans-Unit Id", '<>%1', "Trans-Unit Id");
+            BCXTranslationTarget.ModifyAll(Target, Target);
+            BCXTranslationTarget.ModifyAll(Translate, false);
         end;
         if Target <> '' then
             Translate := false;

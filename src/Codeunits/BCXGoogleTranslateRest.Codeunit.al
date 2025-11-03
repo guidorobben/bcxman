@@ -29,11 +29,11 @@ codeunit 78600 "BCX Google Translate Rest"
         HttpClient.DefaultRequestHeaders().Add('User-Agent', 'Dynamics 365');
         EndPoint := 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=%1&tl=%2&dt=t&q=%3';
         EndPoint := StrSubstNo(EndPoint, inSourceLang, inTargetLang, PreparedText);
-        if not HttpClient.Get(EndPoint, ResponseMessage) then
+        if not HttpClient.Get(EndPoint, HttpResponseMessage) then
             Error('The call to the web service failed.');
-        if not ResponseMessage.IsSuccessStatusCode() then
-            Error('The web service returned an error message:\\' + 'Status code: %1\' + 'Description: %2', ResponseMessage.HttpStatusCode(), ResponseMessage.ReasonPhrase());
-        ResponseMessage.Content().ReadAs(TransText);
+        if not HttpResponseMessage.IsSuccessStatusCode() then
+            Error('The web service returned an error message:\\' + 'Status code: %1\' + 'Description: %2', HttpResponseMessage.HttpStatusCode(), HttpResponseMessage.ReasonPhrase());
+        HttpResponseMessage.Content().ReadAs(TransText);
 
         TranslatedText := GetLines(TransText);
         outTransText := CopyStr(RestorePlaceholders(TranslatedText), 1, 2048);
@@ -78,6 +78,6 @@ codeunit 78600 "BCX Google Translate Rest"
 
     var
         HttpClient: HttpClient;
-        ResponseMessage: HttpResponseMessage;
+        HttpResponseMessage: HttpResponseMessage;
         TransText: Text;
 }

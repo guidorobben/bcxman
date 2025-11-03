@@ -49,7 +49,7 @@ page 78613 "BCX Translation Activities"
 
     trigger OnOpenPage()
     var
-        UserAccess: Record "BCX User Access";
+        BCXUserAccess: Record "BCX User Access";
         DateFilterLbl: Label '%1..%2', Comment = '%1: Start date, %2: End date';
         DateFilterTxt: Text;
     begin
@@ -59,14 +59,14 @@ page 78613 "BCX Translation Activities"
         end;
         DateFilterTxt := StrSubstNo(DateFilterLbl, CalcDate('<-CM>', Today()), Today());
         Rec.SetFilter("Month Date Filter", DateFilterTxt);
-        UserAccess.SetRange("User Id", UserId());
-        if UserAccess.FindSet() then
+        BCXUserAccess.SetRange("User Id", UserId());
+        if BCXUserAccess.FindSet() then
             repeat
                 if ProjectFilterTxt <> '' then
-                    ProjectFilterTxt += '|' + UserAccess."Project Code"
+                    ProjectFilterTxt += '|' + BCXUserAccess."Project Code"
                 else
-                    ProjectFilterTxt := UserAccess."Project Code";
-            until UserAccess.Next() = 0;
+                    ProjectFilterTxt := BCXUserAccess."Project Code";
+            until BCXUserAccess.Next() = 0;
         Rec.SetFilter("Project Filter", ProjectFilterTxt);
     end;
 }

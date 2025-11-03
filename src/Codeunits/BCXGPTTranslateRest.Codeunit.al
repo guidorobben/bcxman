@@ -1,17 +1,17 @@
 codeunit 78602 "BCX GPT Translate Rest"
 {
-    procedure SendHttpRequestWithAuth(HttpMethod: Text[10]; Url: Text; Payload: Text; ContentType: Text; HeaderName: Text; HeaderValue: Text; var Response: HttpResponseMessage)
+    procedure SendHttpRequestWithAuth(HttpMethod: Text[10]; Url: Text; Payload: Text; ContentType: Text; HeaderName: Text; HeaderValue: Text; var ResponseHttpResponseMessage: HttpResponseMessage)
     var
-        Client: HttpClient;
-        Content: HttpContent;
+        RequestHttpClient: HttpClient;
+        RequestHttpContent: HttpContent;
         RequestHeaders: HttpHeaders;
-        Request: HttpRequestMessage;
+        RequestHttpRequestMessage: HttpRequestMessage;
     begin
         // Create request
-        Request.SetRequestUri(Url);
-        Request.Method := HttpMethod;
+        RequestHttpRequestMessage.SetRequestUri(Url);
+        RequestHttpRequestMessage.Method := HttpMethod;
 
-        Request.GetHeaders(RequestHeaders);
+        RequestHttpRequestMessage.GetHeaders(RequestHeaders);
         if (HeaderName <> '') and not RequestHeaders.Contains(HeaderName) then
             RequestHeaders.Add(HeaderName, HeaderValue);
 
@@ -19,24 +19,22 @@ codeunit 78602 "BCX GPT Translate Rest"
             RequestHeaders.Add('Content-Type', ContentType);
 
         // Write body
-        Content.WriteFrom(Payload);
-        Request.Content := Content;
+        RequestHttpContent.WriteFrom(Payload);
+        RequestHttpRequestMessage.Content := RequestHttpContent;
 
         // Send request
-        if not Client.Send(Request, Response) then
+        if not RequestHttpClient.Send(RequestHttpRequestMessage, ResponseHttpResponseMessage) then
             Error('%1 request failed: %2', HttpMethod, Url);
     end;
 
 
-    procedure ReadResponseAsText(Response: HttpResponseMessage): Text
+    procedure ReadResponseAsText(ResponseHttpResponseMessage: HttpResponseMessage): Text
     var
         ResponseText: Text;
     begin
-        Response.Content().ReadAs(ResponseText);
+        ResponseHttpResponseMessage.Content().ReadAs(ResponseText);
         exit(ResponseText);
     end;
-
-
 
     local procedure UnprotectGlossaryTerms(var Text: Text[2048]): Text[2048]
     begin
@@ -50,15 +48,15 @@ codeunit 78602 "BCX GPT Translate Rest"
     // Main translation function
     procedure Translate(ProjectCode: Text[20]; inSourceLang: Text[10]; inTargetLang: Text[10]; inText: Text[4000]) outTransText: Text[2048]
     var
-        GenTransTerms: Record "BCX Gen. Translation Term";
-        Setup: Record "BCX Translation Setup";
-        TransTerms: Record "BCX Translation Term";
+        BCXGenTranslationTerm: Record "BCX Gen. Translation Term";
+        BCXTranslationSetup: Record "BCX Translation Setup";
+        BCXTranslationTerm: Record "BCX Translation Term";
         TypeHelper: Codeunit "Type Helper";
         HttpClient: HttpClient;
-        Content: HttpContent;
+        TranslateHttpContent: HttpContent;
         Headers: HttpHeaders;
-        Request: HttpRequestMessage;
-        Response: HttpResponseMessage;
+        TranslateHttpRequestMessage: HttpRequestMessage;
+        TranslateHttpResponseMessage: HttpResponseMessage;
         Messages: JsonArray;
         Payload: JsonObject;
         SystemMsg, UserMsg : JsonObject;
@@ -72,26 +70,26 @@ codeunit 78602 "BCX GPT Translate Rest"
             outTransText := CopyStr(inText, 1, 2048);
             exit;
         end;
-        if not Setup.Get() then
+        if not BCXTranslationSetup.Get() then
             Error('Translation setup is missing.');
-        if not Setup."Use OpenAI" then
+        if not BCXTranslationSetup."Use OpenAI" then
             Error('OpenAI translation is disabled in setup.');
         // Add General Translation Terms marked as pre-translation to glossary
-        if (GenTransTerms.FindSet()) then
+        if (BCXGenTranslationTerm.FindSet()) then
             repeat
-                if not GenTransTerms."Apply Pre-Translation" then
+                if not BCXGenTranslationTerm."Apply Pre-Translation" then
                     continue; // Skip terms that are not marked for pre-translation
-                GlossaryTerms += GenTransTerms.Term + ', ';
-                Glossary.Add(GenTransTerms.Term);
-            until GenTransTerms.Next() = 0;
-        TransTerms.SetFilter("Project Code", '%1', ProjectCode);
-        if (TransTerms.FindSet()) then
+                GlossaryTerms += BCXGenTranslationTerm.Term + ', ';
+                Glossary.Add(BCXGenTranslationTerm.Term);
+            until BCXGenTranslationTerm.Next() = 0;
+        BCXTranslationTerm.SetFilter("Project Code", '%1', ProjectCode);
+        if (BCXTranslationTerm.FindSet()) then
             repeat
-                if not TransTerms."Apply Pre-Translation" then
+                if not BCXTranslationTerm."Apply Pre-Translation" then
                     continue; // Skip terms that are not marked for pre-translation
-                GlossaryTerms += TransTerms.Term + ', ';
-                Glossary.Add(TransTerms.Term);
-            until TransTerms.Next() = 0;
+                GlossaryTerms += BCXTranslationTerm.Term + ', ';
+                Glossary.Add(BCXTranslationTerm.Term);
+            until BCXTranslationTerm.Next() = 0;
         SystemPrompt :=
           'You are a professional translator specializing in Microsoft Business Central ERP. ' +
           'Translate from English (US) to the language specified in the first line (ISO format, e.g., da-DK). ' +
@@ -117,31 +115,31 @@ codeunit 78602 "BCX GPT Translate Rest"
         UserMsg.Add('content', inTargetLang + TypeHelper.NewLine() + inText);
         Messages.Add(UserMsg);
 
-        Payload.Add('model', Format(Setup."OpenAI Model"));
+        Payload.Add('model', Format(BCXTranslationSetup."OpenAI Model"));
         Payload.Add('temperature', 0);
         Payload.Add('max_tokens', 256);
         Payload.Add('messages', Messages);
 
         // Set up request
-        Request.SetRequestUri('https://api.openai.com/v1/chat/completions');
-        Request.Method := 'POST';
-        Request.GetHeaders(Headers);
-        Headers.TryAddWithoutValidation('Authorization', 'Bearer ' + Setup."OpenAI API Key");
+        TranslateHttpRequestMessage.SetRequestUri('https://api.openai.com/v1/chat/completions');
+        TranslateHttpRequestMessage.Method := 'POST';
+        TranslateHttpRequestMessage.GetHeaders(Headers);
+        Headers.TryAddWithoutValidation('Authorization', 'Bearer ' + BCXTranslationSetup."OpenAI API Key");
 
-        Content.WriteFrom(Format(Payload));
-        Content.GetHeaders(Headers); // reuse same Headers to avoid split issues
+        TranslateHttpContent.WriteFrom(Format(Payload));
+        TranslateHttpContent.GetHeaders(Headers); // reuse same Headers to avoid split issues
         Headers.Remove('Content-Type');
         Headers.TryAddWithoutValidation('Content-Type', 'application/json');
-        Request.Content := Content;
+        TranslateHttpRequestMessage.Content := TranslateHttpContent;
 
         // Send and check
-        if not HttpClient.Send(Request, Response) then
+        if not HttpClient.Send(TranslateHttpRequestMessage, TranslateHttpResponseMessage) then
             Error('Failed to send request to OpenAI API.');
 
-        if not Response.IsSuccessStatusCode() then
-            Error('OpenAI returned status %1: %2', Response.HttpStatusCode(), Response.ReasonPhrase());
+        if not TranslateHttpResponseMessage.IsSuccessStatusCode() then
+            Error('OpenAI returned status %1: %2', TranslateHttpResponseMessage.HttpStatusCode(), TranslateHttpResponseMessage.ReasonPhrase());
 
-        Response.Content().ReadAs(ResponseText);
+        TranslateHttpResponseMessage.Content().ReadAs(ResponseText);
         outTransText := CopyStr(ParseTranslatedText(ResponseText), 1, 2048); // Prevent overflow
         outTransText := UnprotectGlossaryTerms(outTransText);
     end;

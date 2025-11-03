@@ -11,6 +11,8 @@ page 78615 "BCX Trans Source Factbox"
         {
             group(Totals)
             {
+                Caption = 'Totals';
+
                 field(TotalCaptions; TotalCaptions)
                 {
                     ApplicationArea = All;
@@ -40,14 +42,14 @@ page 78615 "BCX Trans Source Factbox"
 
     trigger OnAfterGetRecord()
     var
-        Source: Record "BCX Translation Source";
+        BCXTranslationSource: Record "BCX Translation Source";
     begin
-        Source.SetRange("Project Code", Rec."Project Code");
-        TotalCaptions := Source.Count();
-        Source.SetRange(Source, '');
-        TotalMissingCaptions := Source.Count();
-        Source.SetFilter(Source, '<>%1', '');
-        Source.SetRange(Source, '');
-        TotalMissingTranslations := Source.Count();
+        BCXTranslationSource.SetRange("Project Code", Rec."Project Code");
+        TotalCaptions := BCXTranslationSource.Count();
+        BCXTranslationSource.SetRange(Source, '');
+        TotalMissingCaptions := BCXTranslationSource.Count();
+        BCXTranslationSource.SetFilter(Source, '<>%1', '');
+        BCXTranslationSource.SetRange(Source, '');
+        TotalMissingTranslations := BCXTranslationSource.Count();
     end;
 }

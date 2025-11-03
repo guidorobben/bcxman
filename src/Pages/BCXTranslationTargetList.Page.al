@@ -348,258 +348,258 @@ page 78603 "BCX Translation Target List"
 
     trigger OnOpenPage()
     var
-        TargetLanguage: Record "BCX Target Language";
-        TransSetup: Record "BCX Translation Setup";
-        TransSource: Record "BCX Translation Source";
-        TransExistingTarget: Record "BCX Translation Target";
-        TransTarget: Record "BCX Translation Target";
+        BCXTargetLanguage: Record "BCX Target Language";
+        BCXTranslationSetup: Record "BCX Translation Setup";
+        BCXTranslationSource: Record "BCX Translation Source";
+        ExistingBCXTranslationTarget: Record "BCX Translation Target";
+        BCXTranslationTarget: Record "BCX Translation Target";
     begin
-        TransSetup.Get();
-        ShowTranslate := TransSetup."Use Free Google Translate" or TransSetup."Use OpenAI" or TransSetup."Use DeepL";
+        BCXTranslationSetup.Get();
+        ShowTranslate := BCXTranslationSetup."Use Free Google Translate" or BCXTranslationSetup."Use OpenAI" or BCXTranslationSetup."Use DeepL";
         ShowTargetLanguageCode := true;
         TargetLanguageFilter := CopyStr(Rec.GetFilter("Target Language"), 1, 10);
         TargetLanguageIsoFilter := CopyStr(Rec.GetFilter("Target Language ISO code"), 1, 10);
         if (TargetLanguageFilter <> '') then begin
 
-            TransSource.SetFilter("Project Code", Rec.GetFilter("Project Code"));
-            if TransSource.FindSet() then
+            BCXTranslationSource.SetFilter("Project Code", Rec.GetFilter("Project Code"));
+            if BCXTranslationSource.FindSet() then
                 repeat
-                    TransTarget.Init();
-                    TransTarget.TransferFields(TransSource);
-                    TransTarget."Target Language" := TargetLanguageFilter;
-                    TransTarget."Target Language ISO code" := TargetLanguageIsoFilter;
+                    BCXTranslationTarget.Init();
+                    BCXTranslationTarget.TransferFields(BCXTranslationSource);
+                    BCXTranslationTarget."Target Language" := TargetLanguageFilter;
+                    BCXTranslationTarget."Target Language ISO code" := TargetLanguageIsoFilter;
 
-                    TransExistingTarget.SetRange(Source, TransTarget.Source);
-                    TransExistingTarget.SetRange("Target Language ISO code", TargetLanguageIsoFilter);
-                    TransExistingTarget.SetRange(Translate, false);
-                    if TransExistingTarget.FindFirst() then begin
-                        TransTarget.Target := TransExistingTarget.Target;
-                        TransTarget.Translate := false;
+                    ExistingBCXTranslationTarget.SetRange(Source, BCXTranslationTarget.Source);
+                    ExistingBCXTranslationTarget.SetRange("Target Language ISO code", TargetLanguageIsoFilter);
+                    ExistingBCXTranslationTarget.SetRange(Translate, false);
+                    if ExistingBCXTranslationTarget.FindFirst() then begin
+                        BCXTranslationTarget.Target := ExistingBCXTranslationTarget.Target;
+                        BCXTranslationTarget.Translate := false;
                     end else
-                        TransTarget.Translate := true;
+                        BCXTranslationTarget.Translate := true;
 
-                    if TransTarget.Insert() then;
-                until TransSource.Next() = 0;
+                    if BCXTranslationTarget.Insert() then;
+                until BCXTranslationSource.Next() = 0;
         end
         else begin
             // No Target language, loop through all languages. 
-            TargetLanguage.SetFilter("Project Code", Rec.GetFilter("Project Code"));
-            if TargetLanguage.FindSet() then
+            BCXTargetLanguage.SetFilter("Project Code", Rec.GetFilter("Project Code"));
+            if BCXTargetLanguage.FindSet() then
                 repeat
-                    if (TargetLanguage."Equivalent Language" = '') then begin
-                        TransSource.Reset();
-                        TransSource.SetFilter("Project Code", Rec.GetFilter("Project Code"));
-                        if TransSource.FindSet() then
+                    if (BCXTargetLanguage."Equivalent Language" = '') then begin
+                        BCXTranslationSource.Reset();
+                        BCXTranslationSource.SetFilter("Project Code", Rec.GetFilter("Project Code"));
+                        if BCXTranslationSource.FindSet() then
                             repeat
-                                TransTarget.TransferFields(TransSource);
-                                TransTarget."Target Language" := TargetLanguage."Target Language";
-                                TransTarget."Target Language ISO code" := TargetLanguage."Target Language ISO code";
-                                if TransTarget.Insert() then;
-                            until TransSource.Next() = 0;
+                                BCXTranslationTarget.TransferFields(BCXTranslationSource);
+                                BCXTranslationTarget."Target Language" := BCXTargetLanguage."Target Language";
+                                BCXTranslationTarget."Target Language ISO code" := BCXTargetLanguage."Target Language ISO code";
+                                if BCXTranslationTarget.Insert() then;
+                            until BCXTranslationSource.Next() = 0;
                     end;
-                until TargetLanguage.Next() = 0;
+                until BCXTargetLanguage.Next() = 0;
         end;
     end;
 
 
     local procedure CopyAll(inOnlyEmpty: Boolean)
     var
-        Project: Record "BCX Translation Project";
-        TransTarget: Record "BCX Translation Target";
-        Window: Dialog;
+        BCXTranslationProject: Record "BCX Translation Project";
+        BCXTranslationTarget: Record "BCX Translation Target";
+        CopyDialog: Dialog;
         Counter: Integer;
         TotalCount: Integer;
         DialogTxt: Label 'Copying #1###### of #2######', Comment = '#1 is the number of copied captions, #2 is the total number of captions to process';
     begin
-        Project.Get(Rec."Project Code");
+        BCXTranslationProject.Get(Rec."Project Code");
         if inOnlyEmpty then
-            TransTarget.SetRange(Target, '');
+            BCXTranslationTarget.SetRange(Target, '');
         // TransTarget.SetRange(Translate, true);
-        TransTarget.SetRange("Project Code", Project."Project Code");
-        TransTarget.SetRange("Target Language ISO code", Rec."Target Language ISO code");
+        BCXTranslationTarget.SetRange("Project Code", BCXTranslationProject."Project Code");
+        BCXTranslationTarget.SetRange("Target Language ISO code", Rec."Target Language ISO code");
 
-        TotalCount := TransTarget.Count();
-        Window.Open(DialogTxt);
+        TotalCount := BCXTranslationTarget.Count();
+        CopyDialog.Open(DialogTxt);
 
-        if TransTarget.FindSet() then
+        if BCXTranslationTarget.FindSet() then
             repeat
                 Counter += 1;
-                Window.Update(1, Counter);
-                Window.Update(2, TotalCount);
-                TransTarget.Target := TransTarget.Source;
-                TransTarget.Translate := false;
-                TransTarget.Modify();
-                Commit();
-            until TransTarget.Next() = 0;
+                CopyDialog.Update(1, Counter);
+                CopyDialog.Update(2, TotalCount);
+                BCXTranslationTarget.Target := BCXTranslationTarget.Source;
+                BCXTranslationTarget.Translate := false;
+                BCXTranslationTarget.Modify();
+                Commit(); //Save progress
+            until BCXTranslationTarget.Next() = 0;
 
 
-        Window.Close();
+        CopyDialog.Close();
     end;
 
     local procedure TranslateAll(inOnlyEmpty: Boolean)
     var
-        Project: Record "BCX Translation Project";
-        TransTarget: Record "BCX Translation Target";
-        TransTarget2: Record "BCX Translation Target";
-        Translater: Codeunit "BCX Translate Dispatcher";
-        Window: Dialog;
+        BCXTranslationProject: Record "BCX Translation Project";
+        BCXTranslationTarget: Record "BCX Translation Target";
+        BCXTranslationTarget2: Record "BCX Translation Target";
+        BCXTranslateDispatcher: Codeunit "BCX Translate Dispatcher";
+        TranslateDialog: Dialog;
         Counter: Integer;
         TotalCount: Integer;
         DialogTxt: Label 'Converting #1###### of #2######', Comment = '#1 is the number of converted captions, #2 is the total number of captions to process';
     begin
-        Project.Get(Rec."Project Code");
+        BCXTranslationProject.Get(Rec."Project Code");
 
         if inOnlyEmpty then
-            TransTarget.SetRange(Target, '');
-        TransTarget.SetRange(Translate, true);
-        TransTarget.SetRange("Project Code", Project."Project Code");
+            BCXTranslationTarget.SetRange(Target, '');
+        BCXTranslationTarget.SetRange(Translate, true);
+        BCXTranslationTarget.SetRange("Project Code", BCXTranslationProject."Project Code");
         if (TargetLanguageIsoFilter <> '') then
-            TransTarget.SetRange("Target Language ISO code", TargetLanguageIsoFilter);
+            BCXTranslationTarget.SetRange("Target Language ISO code", TargetLanguageIsoFilter);
 
-        TotalCount := TransTarget.Count();
-        Window.Open(DialogTxt);
+        TotalCount := BCXTranslationTarget.Count();
+        TranslateDialog.Open(DialogTxt);
 
-        TransTarget.SetCurrentKey(Source);
-        if TransTarget.FindSet() then
+        BCXTranslationTarget.SetCurrentKey(Source);
+        if BCXTranslationTarget.FindSet() then
             repeat
                 Counter += 1;
-                Window.Update(1, Counter);
-                Window.Update(2, TotalCount);
+                TranslateDialog.Update(1, Counter);
+                TranslateDialog.Update(2, TotalCount);
 
-                TransTarget.Target :=
-                  Translater.Translate(Project."Project Code",
-                                       Project."Source Language ISO code",
-                                       TransTarget."Target Language ISO code",
-                                       TransTarget.Source);
-                TransTarget.Target :=
-                  ReplaceTermInTranslation(TransTarget."Target Language ISO code", TransTarget.Target);
-                TransTarget.Translate := false;
-                TransTarget.Modify();
+                BCXTranslationTarget.Target :=
+                  BCXTranslateDispatcher.Translate(BCXTranslationProject."Project Code",
+                                       BCXTranslationProject."Source Language ISO code",
+                                       BCXTranslationTarget."Target Language ISO code",
+                                       BCXTranslationTarget.Source);
+                BCXTranslationTarget.Target :=
+                  ReplaceTermInTranslation(BCXTranslationTarget."Target Language ISO code", BCXTranslationTarget.Target);
+                BCXTranslationTarget.Translate := false;
+                BCXTranslationTarget.Modify();
                 // Escape source for filter
-                TransTarget2.Reset();
-                TransTarget2.SetRange("Project Code", Project."Project Code"); // keep within project
-                TransTarget2.SetFilter(Source, '%1', TransTarget.Source);
-                TransTarget2.SetFilter("Target Language ISO code", TransTarget."Target Language ISO code");
+                BCXTranslationTarget2.Reset();
+                BCXTranslationTarget2.SetRange("Project Code", BCXTranslationProject."Project Code"); // keep within project
+                BCXTranslationTarget2.SetFilter(Source, '%1', BCXTranslationTarget.Source);
+                BCXTranslationTarget2.SetFilter("Target Language ISO code", BCXTranslationTarget."Target Language ISO code");
                 if inOnlyEmpty then
-                    TransTarget2.SetRange(Target, '');
+                    BCXTranslationTarget2.SetRange(Target, '');
 
-                TransTarget2.ModifyAll(Translate, false);
-                TransTarget2.ModifyAll(Target, TransTarget.Target);
+                BCXTranslationTarget2.ModifyAll(Translate, false);
+                BCXTranslationTarget2.ModifyAll(Target, BCXTranslationTarget.Target);
 
                 Commit();
                 SelectLatestVersion();
 
             // Skip already-handled source
             // TransTarget.SetFilter(Source, '<>%1', TransTarget.Source);
-            until TransTarget.Next() = 0;
+            until BCXTranslationTarget.Next() = 0;
 
-        Window.Close();
+        TranslateDialog.Close();
     end;
 
 
     // This does the post-translation replacement of terms
     local procedure ReplaceTermInTranslation(TargetLanguageIsoCode: Text[10]; inTarget: Text[2048]) outTarget: Text[2048]
     var
-        TransTerm: Record "BCX Translation Term";
+        BCXTranslationTerm: Record "BCX Translation Term";
         Found: Boolean;
         StartLetterIsUppercase: Boolean;
         StartPos: Integer;
     begin
-        TransTerm.SetRange("Project Code", Rec."Project Code");
-        TransTerm.SetRange("Target Language", TargetLanguageIsoCode);
-        if TransTerm.FindSet() then
+        BCXTranslationTerm.SetRange("Project Code", Rec."Project Code");
+        BCXTranslationTerm.SetRange("Target Language", TargetLanguageIsoCode);
+        if BCXTranslationTerm.FindSet() then
             repeat
-                if TransTerm."Apply Pre-Translation" then
+                if BCXTranslationTerm."Apply Pre-Translation" then
                     continue; // Skip terms that are marked for pre-translation only
-                StartPos := StrPos(LowerCase(inTarget), LowerCase(TransTerm.Term));
+                StartPos := StrPos(LowerCase(inTarget), LowerCase(BCXTranslationTerm.Term));
                 if StartPos > 0 then begin
                     StartLetterIsUppercase := CopyStr(inTarget, StartPos, 1) = UpperCase(CopyStr(inTarget, StartPos, 1));
                     if StartLetterIsUppercase then
-                        TransTerm.Translation := UpperCase(TransTerm.Translation[1]) + CopyStr(TransTerm.Translation, 2)
+                        BCXTranslationTerm.Translation := UpperCase(BCXTranslationTerm.Translation[1]) + CopyStr(BCXTranslationTerm.Translation, 2)
                     else
-                        TransTerm.Translation := LowerCase(TransTerm.Translation[1]) + CopyStr(TransTerm.Translation, 2);
+                        BCXTranslationTerm.Translation := LowerCase(BCXTranslationTerm.Translation[1]) + CopyStr(BCXTranslationTerm.Translation, 2);
                     if (StartPos > 1) then begin
                         outTarget := CopyStr(inTarget, 1, StartPos - 1) +
-                                     TransTerm.Translation +
-                                     CopyStr(inTarget, StartPos + StrLen(TransTerm.Term));
+                                     BCXTranslationTerm.Translation +
+                                     CopyStr(inTarget, StartPos + StrLen(BCXTranslationTerm.Term));
                         Found := true;
                     end else begin
-                        outTarget := TransTerm.Translation +
-                                     CopyStr(inTarget, StrLen(TransTerm.Term) + 1);
+                        outTarget := BCXTranslationTerm.Translation +
+                                     CopyStr(inTarget, StrLen(BCXTranslationTerm.Term) + 1);
                         Found := true;
                     end;
                 end;
                 if Found then
                     inTarget := outTarget;
-            until TransTerm.Next() = 0;
+            until BCXTranslationTerm.Next() = 0;
         if not Found then
             outTarget := inTarget;
     end;
 
     local procedure FindDuplicates()
     var
-        TransTarget: Record "BCX Translation Target";
-        TransTargetDup: Record "BCX Translation Target";
-        TransTargetTrans: Record "BCX Translation Target";
+        BCXTranslationTarget: Record "BCX Translation Target";
+        DuplicateBCXTranslationTarget: Record "BCX Translation Target";
+        TransBCXTranslationTarget: Record "BCX Translation Target";
         Counter: Integer;
         FinishedTxt: Label '%1 Duplicate captions found', Comment = '%1 is the number of duplicate captions found and updated';
     begin
-        TransTarget.CopyFilters(Rec);
-        TransTarget.SetRange(Target, '');
-        if TransTarget.FindSet() then
+        BCXTranslationTarget.CopyFilters(Rec);
+        BCXTranslationTarget.SetRange(Target, '');
+        if BCXTranslationTarget.FindSet() then
             repeat
-                TransTargetTrans.CopyFilters(Rec);
-                TransTargetTrans.SetRange(Source, TransTarget.Source);
-                TransTargetTrans.SetFilter(Target, '<>%1', '');
-                if TransTargetTrans.FindFirst() then begin
-                    TransTargetDup.CopyFilters(Rec);
-                    TransTargetDup.SetRange(Source, TransTarget.Source);
-                    TransTargetDup.SetRange(Target, '');
-                    TransTargetDup.ModifyAll(Target, TransTargetTrans.Target);
+                TransBCXTranslationTarget.CopyFilters(Rec);
+                TransBCXTranslationTarget.SetRange(Source, BCXTranslationTarget.Source);
+                TransBCXTranslationTarget.SetFilter(Target, '<>%1', '');
+                if TransBCXTranslationTarget.FindFirst() then begin
+                    DuplicateBCXTranslationTarget.CopyFilters(Rec);
+                    DuplicateBCXTranslationTarget.SetRange(Source, BCXTranslationTarget.Source);
+                    DuplicateBCXTranslationTarget.SetRange(Target, '');
+                    DuplicateBCXTranslationTarget.ModifyAll(Target, TransBCXTranslationTarget.Target);
                     Counter += 1;
                 end;
-            until TransTarget.Next() = 0;
+            until BCXTranslationTarget.Next() = 0;
         Message(FinishedTxt, Counter);
     end;
 
     local procedure UpdateFromSource()
     var
-        TransSource: Record "BCX Translation Source";
-        TransTarget: Record "BCX Translation Target";
+        BCXTranslationSource: Record "BCX Translation Source";
+        BCXTranslationTarget: Record "BCX Translation Target";
         Counter: Integer;
         DeletedCounter: Integer;
         FinishedTxt: Label '%1 source captions updated. %2 obsolete targets deleted.', Comment = '%1 is the number of updated captions, %2 is the number of deleted obsolete targets';
     begin
-        TransTarget.ModifyAll(Translate, false);
-        TransSource.SetFilter("Project Code", Rec.GetFilter("Project Code"));
-        if TransSource.FindSet() then
+        BCXTranslationTarget.ModifyAll(Translate, false);
+        BCXTranslationSource.SetFilter("Project Code", Rec.GetFilter("Project Code"));
+        if BCXTranslationSource.FindSet() then
             repeat
-                TransTarget.SetRange("Project Code", TransSource."Project Code");
-                TransTarget.SetRange("Trans-Unit Id", TransSource."Trans-Unit Id");
-                if TransTarget.FindSet() then
+                BCXTranslationTarget.SetRange("Project Code", BCXTranslationSource."Project Code");
+                BCXTranslationTarget.SetRange("Trans-Unit Id", BCXTranslationSource."Trans-Unit Id");
+                if BCXTranslationTarget.FindSet() then
                     repeat
-                        if TransTarget.Source <> TransSource.Source then begin
-                            TransTarget.Source := TransSource.Source;
-                            TransTarget.Translate := true;
-                            TransTarget.Modify();
+                        if BCXTranslationTarget.Source <> BCXTranslationSource.Source then begin
+                            BCXTranslationTarget.Source := BCXTranslationSource.Source;
+                            BCXTranslationTarget.Translate := true;
+                            BCXTranslationTarget.Modify();
                             Counter += 1;
                         end;
-                    until TransTarget.Next() = 0;
-            until TransSource.Next() = 0;
+                    until BCXTranslationTarget.Next() = 0;
+            until BCXTranslationSource.Next() = 0;
 
 
         // Check for targets that no longer exist in source
-        TransTarget.Reset();
-        TransTarget.SetRange("Project Code", Rec.GetFilter("Project Code"));
-        if TransTarget.FindSet() then
+        BCXTranslationTarget.Reset();
+        BCXTranslationTarget.SetRange("Project Code", Rec.GetFilter("Project Code"));
+        if BCXTranslationTarget.FindSet() then
             repeat
-                TransSource.SetRange("Project Code", TransTarget."Project Code");
-                TransSource.SetRange("Trans-Unit Id", TransTarget."Trans-Unit Id");
-                if not TransSource.FindFirst() then begin
-                    TransTarget.Delete();
+                BCXTranslationSource.SetRange("Project Code", BCXTranslationTarget."Project Code");
+                BCXTranslationSource.SetRange("Trans-Unit Id", BCXTranslationTarget."Trans-Unit Id");
+                if not BCXTranslationSource.FindFirst() then begin
+                    BCXTranslationTarget.Delete();
                     DeletedCounter += 1;
                 end;
-            until TransTarget.Next() = 0;
+            until BCXTranslationTarget.Next() = 0;
         Message(FinishedTxt, Counter, DeletedCounter);
 
     end;

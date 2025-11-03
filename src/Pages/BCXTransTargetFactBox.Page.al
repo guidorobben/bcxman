@@ -52,23 +52,23 @@ page 78605 "BCX Trans Target Factbox"
 
     trigger OnAfterGetCurrRecord()
     var
-        Target: Record "BCX Translation Target";
+        BCXTranslationTarget: Record "BCX Translation Target";
     begin
-        Target.SetRange("Project Code", Rec."Project Code");
-        TotalCaptions := Target.Count();
-        Target.SetRange(Source, '');
-        TotalMissingCaptions := Target.Count();
-        Target.SetFilter(Source, '<>%1', '');
-        Target.SetRange(Target, '');
-        TotalMissingTranslations := Target.Count();
+        BCXTranslationTarget.SetRange("Project Code", Rec."Project Code");
+        TotalCaptions := BCXTranslationTarget.Count();
+        BCXTranslationTarget.SetRange(Source, '');
+        TotalMissingCaptions := BCXTranslationTarget.Count();
+        BCXTranslationTarget.SetFilter(Source, '<>%1', '');
+        BCXTranslationTarget.SetRange(Target, '');
+        TotalMissingTranslations := BCXTranslationTarget.Count();
     end;
 
     trigger OnAfterGetRecord()
     var
-        TransTarget: Record "BCX Translation Target";
+        BCXTranslationTarget: Record "BCX Translation Target";
     begin
-        TransTarget.SetRange(Source, Rec.Source);
-        Instances := TransTarget.Count();
+        BCXTranslationTarget.SetRange(Source, Rec.Source);
+        Instances := BCXTranslationTarget.Count();
     end;
 
 }

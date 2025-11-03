@@ -19,15 +19,15 @@ codeunit 78605 "BCX Xliff Parser"
 
     local procedure ParseAndInsert(ProjectCode: Code[20]; FileName: Text; var InS: InStream; Mode: Text; SourceLangISO: Text[10]; TargetLangISO: Text[10])
     var
-        RecBaseNote: Record "BCX Base Translation Notes";
-        RecBaseTarget: Record "BCX Base Translation Target";
-        RecNote: Record "BCX Translation Notes";
-        RecProject: Record "BCX Translation Project";
-        RecSource: Record "BCX Translation Source";
-        RecExistingTarget: Record "BCX Translation Target";
-        RecTarget: Record "BCX Translation Target";
+        BCXBaseTranslationNotes: Record "BCX Base Translation Notes";
+        BCXBaseTranslationTarget: Record "BCX Base Translation Target";
+        BCXTranslationNote: Record "BCX Translation Note";
+        BCXTranslationProject: Record "BCX Translation Project";
+        BCXTranslationSource: Record "BCX Translation Source";
+        ExistingBCXTranslationTarget: Record "BCX Translation Target";
+        BCXTranslationTarget: Record "BCX Translation Target";
         RecTargetLanguage: Record Language;
-        XmlHelper: Codeunit "BCX XML Helpers";
+        BCXXMLHelper: Codeunit "BCX XML Helper";
 
         i: Integer;
         j: Integer;
@@ -68,8 +68,8 @@ codeunit 78605 "BCX Xliff Parser"
 
     begin
         // Parse XML
-        XmlHelper.ReadXmlFromInStream(InS, XmlDoc);
-        XmlHelper.GetRoot(XmlDoc, RootEl); // <xliff>
+        BCXXMLHelper.ReadXmlFromInStream(InS, XmlDoc);
+        BCXXMLHelper.GetRoot(XmlDoc, RootEl); // <xliff>
 
         // Namespace handling: many XLIFF have default namespace; use it when selecting children
         ns := RootEl.NamespaceUri();
@@ -85,10 +85,10 @@ codeunit 78605 "BCX Xliff Parser"
 #pragma warning disable AA0139
             // If Mode didn't pass source/target ISO, take from file attributes
             if SourceLangISO = '' then
-                SourceLangISO := XmlHelper.GetAttr(FileEl, 'source-language');
+                SourceLangISO := BCXXMLHelper.GetAttr(FileEl, 'source-language');
 
             if TargetLangISO = '' then
-                TargetLangISO := XmlHelper.GetAttr(FileEl, 'target-language');
+                TargetLangISO := BCXXMLHelper.GetAttr(FileEl, 'target-language');
 #pragma warning restore AA0139
 
 
@@ -97,12 +97,12 @@ codeunit 78605 "BCX Xliff Parser"
 
             // If the <file original="..."> contains an original project name, update project (optional)
             if (Mode = 'Source') then begin
-                RecProject.Get(ProjectCode);
-                RecProject."File Name" := CopyStr(FileName, 1, MaxStrLen(RecProject."File Name"));
-                if XmlHelper.GetAttr(FileEl, 'original') <> '' then
-                    RecProject.Validate("Project Name", CopyStr(XmlHelper.GetAttr(FileEl, 'original'), 1, MaxStrLen(RecProject."Project Name")));
+                BCXTranslationProject.Get(ProjectCode);
+                BCXTranslationProject."File Name" := CopyStr(FileName, 1, MaxStrLen(BCXTranslationProject."File Name"));
+                if BCXXMLHelper.GetAttr(FileEl, 'original') <> '' then
+                    BCXTranslationProject.Validate("Project Name", CopyStr(BCXXMLHelper.GetAttr(FileEl, 'original'), 1, MaxStrLen(BCXTranslationProject."Project Name")));
 
-                RecProject.Modify(true);
+                BCXTranslationProject.Modify(true);
             end;
         end;
 
@@ -115,10 +115,10 @@ codeunit 78605 "BCX Xliff Parser"
             TransEl := TransNode.AsXmlElement();
 
             // Attributes
-            TransUnitId := CopyStr(XmlHelper.GetAttr(TransEl, 'id'), 1, MaxStrLen(TransUnitId));
-            SizeUnit := CopyStr(XmlHelper.GetAttr(TransEl, 'size-unit'), 1, MaxStrLen(SizeUnit));
-            TranslateAttr := CopyStr(XmlHelper.GetAttr(TransEl, 'translate'), 1, MaxStrLen(TranslateAttr));
-            AlObjectTarget := CopyStr(XmlHelper.GetAttr(TransEl, 'al-object-target'), 1, MaxStrLen(AlObjectTarget));
+            TransUnitId := CopyStr(BCXXMLHelper.GetAttr(TransEl, 'id'), 1, MaxStrLen(TransUnitId));
+            SizeUnit := CopyStr(BCXXMLHelper.GetAttr(TransEl, 'size-unit'), 1, MaxStrLen(SizeUnit));
+            TranslateAttr := CopyStr(BCXXMLHelper.GetAttr(TransEl, 'translate'), 1, MaxStrLen(TranslateAttr));
+            AlObjectTarget := CopyStr(BCXXMLHelper.GetAttr(TransEl, 'al-object-target'), 1, MaxStrLen(AlObjectTarget));
 
             // Child elements: source (optional content)
             SourceText := '';
@@ -139,7 +139,7 @@ codeunit 78605 "BCX Xliff Parser"
             if (TargetNodes.Count() > 0) then begin
                 TargetNodes.Get(1, tn);
                 TargetText := tn.AsXmlElement().InnerText();
-                TargetStatus := CopyStr(XmlHelper.GetAttr(tn.AsXmlElement(), 'state'), 1, MaxStrLen(TargetStatus));
+                TargetStatus := CopyStr(BCXXMLHelper.GetAttr(tn.AsXmlElement(), 'state'), 1, MaxStrLen(TargetStatus));
             end;
 
             // If both source and target empty -> skip
@@ -154,127 +154,127 @@ codeunit 78605 "BCX Xliff Parser"
             // Insert into appropriate table depending on Mode
 #pragma warning disable AA0022
             if Mode = 'Source' then begin
-                RecSource.Init();
-                RecSource."Project Code" := ProjectCode;
-                RecSource."Trans-Unit Id" := CopyStr(TransUnitId, 1, MaxStrLen(RecSource."Trans-Unit Id"));
-                RecSource.Source := CopyStr(SourceText, 1, MaxStrLen(RecSource.Source));
+                BCXTranslationSource.Init();
+                BCXTranslationSource."Project Code" := ProjectCode;
+                BCXTranslationSource."Trans-Unit Id" := CopyStr(TransUnitId, 1, MaxStrLen(BCXTranslationSource."Trans-Unit Id"));
+                BCXTranslationSource.Source := CopyStr(SourceText, 1, MaxStrLen(BCXTranslationSource.Source));
 
 
                 // handle notes as BCX Translation Notes
                 for j := 1 to NoteList.Count() do begin
                     NoteList.Get(j, NoteNode);
                     NoteEl := NoteNode.AsXmlElement();
-                    NoteFrom := CopyStr(XmlHelper.GetAttr(NoteEl, 'from'), 1, MaxStrLen(NoteFrom));
-                    NoteAnnotates := CopyStr(XmlHelper.GetAttr(NoteEl, 'annotates'), 1, MaxStrLen(NoteAnnotates));
-                    NotePriority := CopyStr(XmlHelper.GetAttr(NoteEl, 'priority'), 1, MaxStrLen(NotePriority));
-                    NoteText := CopyStr(NoteEl.InnerText(), 1, MaxStrLen(RecNote.Note));
+                    NoteFrom := CopyStr(BCXXMLHelper.GetAttr(NoteEl, 'from'), 1, MaxStrLen(NoteFrom));
+                    NoteAnnotates := CopyStr(BCXXMLHelper.GetAttr(NoteEl, 'annotates'), 1, MaxStrLen(NoteAnnotates));
+                    NotePriority := CopyStr(BCXXMLHelper.GetAttr(NoteEl, 'priority'), 1, MaxStrLen(NotePriority));
+                    NoteText := CopyStr(NoteEl.InnerText(), 1, MaxStrLen(BCXTranslationNote.Note));
 
-                    RecNote.Init();
-                    RecNote."Project Code" := ProjectCode;
-                    RecNote."Trans-Unit Id" := RecSource."Trans-Unit Id";
-                    RecNote.From := NoteFrom;
-                    RecNote.Annotates := NoteAnnotates;
-                    RecNote.Priority := NotePriority;
-                    RecNote.Note := CopyStr(NoteText, 1, MaxStrLen(RecNote.Note));
-                    if ((RecNote.Note <> '') and ((RecSource."Field Name" = '') or (RecNote.From = 'Xliff Generator'))) then
-                        RecSource."Field Name" := RecNote.Note;
-                    if not RecNote.Insert() then
-                        RecNote.Modify();
+                    BCXTranslationNote.Init();
+                    BCXTranslationNote."Project Code" := ProjectCode;
+                    BCXTranslationNote."Trans-Unit Id" := BCXTranslationSource."Trans-Unit Id";
+                    BCXTranslationNote.From := NoteFrom;
+                    BCXTranslationNote.Annotates := NoteAnnotates;
+                    BCXTranslationNote.Priority := NotePriority;
+                    BCXTranslationNote.Note := CopyStr(NoteText, 1, MaxStrLen(BCXTranslationNote.Note));
+                    if ((BCXTranslationNote.Note <> '') and ((BCXTranslationSource."Field Name" = '') or (BCXTranslationNote.From = 'Xliff Generator'))) then
+                        BCXTranslationSource."Field Name" := BCXTranslationNote.Note;
+                    if not BCXTranslationNote.Insert() then
+                        BCXTranslationNote.Modify();
                 end;
-                if not RecSource.Insert() then
-                    RecSource.Modify();
+                if not BCXTranslationSource.Insert() then
+                    BCXTranslationSource.Modify();
             end else
                 if Mode = 'BaseTarget' then begin
-                    RecBaseTarget.Init();
-                    RecBaseTarget."Project Code" := ProjectCode;
-                    RecBaseTarget."Trans-Unit Id" := CopyStr(TransUnitId, 1, MaxStrLen(RecBaseTarget."Trans-Unit Id"));
-                    RecBaseTarget.Source := CopyStr(SourceText, 1, MaxStrLen(RecBaseTarget.Source));
-                    RecBaseTarget.Target := CopyStr(TargetText, 1, MaxStrLen(RecBaseTarget.Target));
-                    RecBaseTarget."size-unit" := CopyStr(SizeUnit, 1, MaxStrLen(RecBaseTarget."size-unit"));
-                    RecBaseTarget.TranslateAttr := CopyStr(TranslateAttr, 1, MaxStrLen(RecBaseTarget.TranslateAttr));
-                    RecBaseTarget."al-object-target" := CopyStr(AlObjectTarget, 1, MaxStrLen(RecBaseTarget."al-object-target"));
-                    RecBaseTarget.Validate("Target Language ISO code", TargetLangISO);
-                    RecBaseTarget."Target Language" := RecTargetLanguage.Code;
+                    BCXBaseTranslationTarget.Init();
+                    BCXBaseTranslationTarget."Project Code" := ProjectCode;
+                    BCXBaseTranslationTarget."Trans-Unit Id" := CopyStr(TransUnitId, 1, MaxStrLen(BCXBaseTranslationTarget."Trans-Unit Id"));
+                    BCXBaseTranslationTarget.Source := CopyStr(SourceText, 1, MaxStrLen(BCXBaseTranslationTarget.Source));
+                    BCXBaseTranslationTarget.Target := CopyStr(TargetText, 1, MaxStrLen(BCXBaseTranslationTarget.Target));
+                    BCXBaseTranslationTarget."size-unit" := CopyStr(SizeUnit, 1, MaxStrLen(BCXBaseTranslationTarget."size-unit"));
+                    BCXBaseTranslationTarget.TranslateAttr := CopyStr(TranslateAttr, 1, MaxStrLen(BCXBaseTranslationTarget.TranslateAttr));
+                    BCXBaseTranslationTarget."al-object-target" := CopyStr(AlObjectTarget, 1, MaxStrLen(BCXBaseTranslationTarget."al-object-target"));
+                    BCXBaseTranslationTarget.Validate("Target Language ISO code", TargetLangISO);
+                    BCXBaseTranslationTarget."Target Language" := RecTargetLanguage.Code;
 
                     // Base target notes => BCX Base Translation Notes
                     for j := 1 to NoteList.Count() do begin
                         NoteList.Get(j, NoteNode);
                         NoteEl := NoteNode.AsXmlElement();
-                        NoteFrom := CopyStr(XmlHelper.GetAttr(NoteEl, 'from'), 1, MaxStrLen(NoteFrom));
-                        NoteAnnotates := CopyStr(XmlHelper.GetAttr(NoteEl, 'annotates'), 1, MaxStrLen(NoteAnnotates));
-                        NotePriority := CopyStr(XmlHelper.GetAttr(NoteEl, 'priority'), 1, MaxStrLen(NotePriority));
-                        NoteText := CopyStr(NoteEl.InnerText(), 1, MaxStrLen(RecBaseNote.Note));
+                        NoteFrom := CopyStr(BCXXMLHelper.GetAttr(NoteEl, 'from'), 1, MaxStrLen(NoteFrom));
+                        NoteAnnotates := CopyStr(BCXXMLHelper.GetAttr(NoteEl, 'annotates'), 1, MaxStrLen(NoteAnnotates));
+                        NotePriority := CopyStr(BCXXMLHelper.GetAttr(NoteEl, 'priority'), 1, MaxStrLen(NotePriority));
+                        NoteText := CopyStr(NoteEl.InnerText(), 1, MaxStrLen(BCXBaseTranslationNotes.Note));
 
-                        RecBaseNote.Init();
-                        RecBaseNote."Project Code" := ProjectCode;
-                        RecBaseNote."Trans-Unit Id" := RecBaseTarget."Trans-Unit Id";
-                        RecBaseNote.From := NoteFrom;
-                        RecBaseNote.Annotates := NoteAnnotates;
-                        RecBaseNote.Priority := NotePriority;
-                        RecBaseNote.Note := CopyStr(NoteText, 1, MaxStrLen(RecBaseNote.Note));
-                        if ((RecBaseNote.Note <> '') and ((RecBaseTarget."Field Name" = '') or (RecBaseNote.From = 'Xliff Generator'))) then
-                            RecBaseTarget."Field Name" := RecBaseNote.Note;
-                        if not RecBaseNote.Insert() then
-                            RecBaseNote.Modify();
+                        BCXBaseTranslationNotes.Init();
+                        BCXBaseTranslationNotes."Project Code" := ProjectCode;
+                        BCXBaseTranslationNotes."Trans-Unit Id" := BCXBaseTranslationTarget."Trans-Unit Id";
+                        BCXBaseTranslationNotes.From := NoteFrom;
+                        BCXBaseTranslationNotes.Annotates := NoteAnnotates;
+                        BCXBaseTranslationNotes.Priority := NotePriority;
+                        BCXBaseTranslationNotes.Note := CopyStr(NoteText, 1, MaxStrLen(BCXBaseTranslationNotes.Note));
+                        if ((BCXBaseTranslationNotes.Note <> '') and ((BCXBaseTranslationTarget."Field Name" = '') or (BCXBaseTranslationNotes.From = 'Xliff Generator'))) then
+                            BCXBaseTranslationTarget."Field Name" := BCXBaseTranslationNotes.Note;
+                        if not BCXBaseTranslationNotes.Insert() then
+                            BCXBaseTranslationNotes.Modify();
 
-                        if not RecBaseTarget.Insert() then
-                            RecBaseTarget.Modify();
+                        if not BCXBaseTranslationTarget.Insert() then
+                            BCXBaseTranslationTarget.Modify();
                     end;
                 end else begin // Mode = 'Target'
-                    RecTarget.Init();
-                    RecTarget."Project Code" := ProjectCode;
-                    RecTarget."Trans-Unit Id" := CopyStr(TransUnitId, 1, MaxStrLen(RecTarget."Trans-Unit Id"));
-                    RecTarget.Source := CopyStr(SourceText, 1, MaxStrLen(RecTarget.Source));
-                    RecTarget.Target := CopyStr(TargetText, 1, MaxStrLen(RecTarget.Target));
-                    RecTarget."Target Language ISO code" := TargetLangISO;
+                    BCXTranslationTarget.Init();
+                    BCXTranslationTarget."Project Code" := ProjectCode;
+                    BCXTranslationTarget."Trans-Unit Id" := CopyStr(TransUnitId, 1, MaxStrLen(BCXTranslationTarget."Trans-Unit Id"));
+                    BCXTranslationTarget.Source := CopyStr(SourceText, 1, MaxStrLen(BCXTranslationTarget.Source));
+                    BCXTranslationTarget.Target := CopyStr(TargetText, 1, MaxStrLen(BCXTranslationTarget.Target));
+                    BCXTranslationTarget."Target Language ISO code" := TargetLangISO;
 
-                    RecTarget.Translate := false;
-                    if (RecTarget.Target = '') then begin
-                        RecExistingTarget.Init();
-                        RecExistingTarget.SetRange(Source, RecTarget.Source);
-                        RecExistingTarget.SetRange("Target Language ISO code", RecTarget."Target Language ISO code");
-                        RecExistingTarget.SetRange(Translate, false);
-                        if RecExistingTarget.FindFirst() then
-                            RecTarget.Target := RecExistingTarget.Target
+                    BCXTranslationTarget.Translate := false;
+                    if (BCXTranslationTarget.Target = '') then begin
+                        ExistingBCXTranslationTarget.Init();
+                        ExistingBCXTranslationTarget.SetRange(Source, BCXTranslationTarget.Source);
+                        ExistingBCXTranslationTarget.SetRange("Target Language ISO code", BCXTranslationTarget."Target Language ISO code");
+                        ExistingBCXTranslationTarget.SetRange(Translate, false);
+                        if ExistingBCXTranslationTarget.FindFirst() then
+                            BCXTranslationTarget.Target := ExistingBCXTranslationTarget.Target
                         else
-                            RecTarget.Translate := true;
+                            BCXTranslationTarget.Translate := true;
                     end else
                         if (TargetStatus = 'needs-adaptation') or (TargetStatus = 'needs-translation') then
-                            RecTarget.Translate := true
+                            BCXTranslationTarget.Translate := true
                         else
-                            RecTarget.Translate := false;
+                            BCXTranslationTarget.Translate := false;
 
 
-                    RecTarget."size-unit" := CopyStr(SizeUnit, 1, MaxStrLen(RecTarget."size-unit"));
-                    RecTarget.TranslateAttr := CopyStr(TranslateAttr, 1, MaxStrLen(RecTarget.TranslateAttr));
-                    RecTarget."al-object-target" := CopyStr(AlObjectTarget, 1, MaxStrLen(RecTarget."al-object-target"));
+                    BCXTranslationTarget."size-unit" := CopyStr(SizeUnit, 1, MaxStrLen(BCXTranslationTarget."size-unit"));
+                    BCXTranslationTarget.TranslateAttr := CopyStr(TranslateAttr, 1, MaxStrLen(BCXTranslationTarget.TranslateAttr));
+                    BCXTranslationTarget."al-object-target" := CopyStr(AlObjectTarget, 1, MaxStrLen(BCXTranslationTarget."al-object-target"));
 
-                    RecTarget."Target Language" := RecTargetLanguage.Code;
+                    BCXTranslationTarget."Target Language" := RecTargetLanguage.Code;
 
                     // Translation notes => BCX Translation Notes
                     for j := 1 to NoteList.Count() do begin
                         NoteList.Get(j, NoteNode);
                         NoteEl := NoteNode.AsXmlElement();
-                        NoteFrom := CopyStr(XmlHelper.GetAttr(NoteEl, 'from'), 1, MaxStrLen(NoteFrom));
-                        NoteAnnotates := CopyStr(XmlHelper.GetAttr(NoteEl, 'annotates'), 1, MaxStrLen(NoteAnnotates));
-                        NotePriority := CopyStr(XmlHelper.GetAttr(NoteEl, 'priority'), 1, MaxStrLen(NotePriority));
-                        NoteText := CopyStr(NoteEl.InnerText(), 1, MaxStrLen(RecNote.Note));
+                        NoteFrom := CopyStr(BCXXMLHelper.GetAttr(NoteEl, 'from'), 1, MaxStrLen(NoteFrom));
+                        NoteAnnotates := CopyStr(BCXXMLHelper.GetAttr(NoteEl, 'annotates'), 1, MaxStrLen(NoteAnnotates));
+                        NotePriority := CopyStr(BCXXMLHelper.GetAttr(NoteEl, 'priority'), 1, MaxStrLen(NotePriority));
+                        NoteText := CopyStr(NoteEl.InnerText(), 1, MaxStrLen(BCXTranslationNote.Note));
 
-                        RecNote.Init();
-                        RecNote."Project Code" := ProjectCode;
-                        RecNote."Trans-Unit Id" := RecTarget."Trans-Unit Id";
-                        RecNote.From := NoteFrom;
-                        RecNote.Annotates := NoteAnnotates;
-                        RecNote.Priority := NotePriority;
-                        RecNote.Note := CopyStr(NoteText, 1, MaxStrLen(RecNote.Note));
-                        if ((RecNote.Note <> '') and ((RecTarget."Field Name" = '') or (RecNote.From = 'Xliff Generator'))) then
-                            RecTarget."Field Name" := RecNote.Note;
-                        if not RecNote.Insert() then
-                            RecNote.Modify();
+                        BCXTranslationNote.Init();
+                        BCXTranslationNote."Project Code" := ProjectCode;
+                        BCXTranslationNote."Trans-Unit Id" := BCXTranslationTarget."Trans-Unit Id";
+                        BCXTranslationNote.From := NoteFrom;
+                        BCXTranslationNote.Annotates := NoteAnnotates;
+                        BCXTranslationNote.Priority := NotePriority;
+                        BCXTranslationNote.Note := CopyStr(NoteText, 1, MaxStrLen(BCXTranslationNote.Note));
+                        if ((BCXTranslationNote.Note <> '') and ((BCXTranslationTarget."Field Name" = '') or (BCXTranslationNote.From = 'Xliff Generator'))) then
+                            BCXTranslationTarget."Field Name" := BCXTranslationNote.Note;
+                        if not BCXTranslationNote.Insert() then
+                            BCXTranslationNote.Modify();
                     end;
 
-                    if not RecTarget.Insert() then
-                        RecTarget.Modify();
+                    if not BCXTranslationTarget.Insert() then
+                        BCXTranslationTarget.Modify();
 
                 end;
 #pragma warning restore AA0022

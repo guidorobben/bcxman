@@ -71,6 +71,7 @@ page 78602 "BCX Target Language List"
         {
             part(FactBox; "BCX Trans Source Factbox")
             {
+                ApplicationArea = All;
                 SubPageLink = "Project Code" = field("Project Code");
             }
         }

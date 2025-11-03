@@ -4,12 +4,12 @@ codeunit 78607 "BCX DeepL Translate"
 
     procedure Translate(ProjectCode: Text[20]; inSourceLang: Text[10]; inTargetLang: Text[10]; inText: Text[2048]) outTransText: Text[2048]
     var
-        Setup: Record "BCX Translation Setup";
+        BCXTranslationSetup: Record "BCX Translation Setup";
         HttpClient: HttpClient;
-        Content: HttpContent;
+        TranslateHttpContent: HttpContent;
         Headers: HttpHeaders;
-        Request: HttpRequestMessage;
-        Response: HttpResponseMessage;
+        TranslateHttpRequestMessage: HttpRequestMessage;
+        TranslateHttpResponseMessage: HttpResponseMessage;
         Texts: JsonArray;
         Payload: JsonObject;
         ResponseText: Text;
@@ -22,13 +22,14 @@ codeunit 78607 "BCX DeepL Translate"
         end;
 
         // Load setup and DeepL API key
-        if not Setup.Get() then
+        if not BCXTranslationSetup.Get() then
             Error('Translation setup is missing.');
-        if not Setup."Use DeepL" then
-            Error('DeepL translation is disabled in setup.');
-        if Setup."DeepL API Key" = '' then
-            Error('DeepL API key is missing in translation setup.');
 
+        if not BCXTranslationSetup."Use DeepL" then
+            Error('DeepL translation is disabled in setup.');
+
+        if BCXTranslationSetup."DeepL API Key" = '' then
+            Error('DeepL API key is missing in translation setup.');
 
         // Map language codes to the simple two-letter code DeepL expects (e.g. da-DK -> DA)
         TmpTgt := inTargetLang;
@@ -43,7 +44,6 @@ codeunit 78607 "BCX DeepL Translate"
             TmpSrc := UpperCase(TmpSrc);
         end;
 
-
         // Note: For DeepL we need to use Glossaries to protect terms, but that is not implemented yet
 
         // Build JSON payload { "text": [ "..." ], "target_lang": "DA", "source_lang": "EN" }
@@ -55,30 +55,30 @@ codeunit 78607 "BCX DeepL Translate"
             Payload.Add('source_lang', TmpSrc);
 
         // Prepare request (always use free endpoint)
-        Request.SetRequestUri('https://api-free.deepl.com/v2/translate');
-        Request.Method := 'POST';
+        TranslateHttpRequestMessage.SetRequestUri('https://api-free.deepl.com/v2/translate');
+        TranslateHttpRequestMessage.Method := 'POST';
 
-        Request.GetHeaders(Headers);
+        TranslateHttpRequestMessage.GetHeaders(Headers);
         // Authorization header must be exactly: Authorization: DeepL-Auth-Key <API key>
-        Headers.TryAddWithoutValidation('Authorization', 'DeepL-Auth-Key ' + Setup."DeepL API Key");
+        Headers.TryAddWithoutValidation('Authorization', 'DeepL-Auth-Key ' + BCXTranslationSetup."DeepL API Key");
 
         // Content: JSON
-        Content.WriteFrom(Format(Payload)); // Format(JsonObject) used in your existing code patterns
-        Content.GetHeaders(Headers); // re-use same headers object to avoid split issues
+        TranslateHttpContent.WriteFrom(Format(Payload)); // Format(JsonObject) used in your existing code patterns
+        TranslateHttpContent.GetHeaders(Headers); // re-use same headers object to avoid split issues
         Headers.Remove('Content-Type');
         Headers.TryAddWithoutValidation('Content-Type', 'application/json');
-        Request.Content := Content;
+        TranslateHttpRequestMessage.Content := TranslateHttpContent;
 
         // Send
-        if not HttpClient.Send(Request, Response) then
+        if not HttpClient.Send(TranslateHttpRequestMessage, TranslateHttpResponseMessage) then
             Error('Failed to send request to DeepL API.');
 
-        if not Response.IsSuccessStatusCode() then begin
-            Response.Content().ReadAs(ResponseText);
-            Error('DeepL returned status %1: %2 -- %3', Response.HttpStatusCode(), Response.ReasonPhrase(), ResponseText);
+        if not TranslateHttpResponseMessage.IsSuccessStatusCode() then begin
+            TranslateHttpResponseMessage.Content().ReadAs(ResponseText);
+            Error('DeepL returned status %1: %2 -- %3', TranslateHttpResponseMessage.HttpStatusCode(), TranslateHttpResponseMessage.ReasonPhrase(), ResponseText);
         end;
 
-        Response.Content().ReadAs(ResponseText);
+        TranslateHttpResponseMessage.Content().ReadAs(ResponseText);
 
         // Parse DeepL response and return first translated text
         outTransText := CopyStr(ParseDeepLResponse(ResponseText), 1, 2048);
@@ -90,7 +90,7 @@ codeunit 78607 "BCX DeepL Translate"
 
     local procedure ParseDeepLResponse(JsonText: Text): Text
     var
-        Helper: Codeunit "BCX XML Helpers";
+        BCXXMLHelper: Codeunit "BCX XML Helper";
         TranslationsArr: JsonArray;
         FirstTranslationObj: JsonObject;
         RootObj: JsonObject;
@@ -120,7 +120,7 @@ codeunit 78607 "BCX DeepL Translate"
             Error('DeepL translation object missing ''text''.');
 
         ResultTxt := TextTok.AsValue().AsText();
-        exit(Helper.TrimText(ResultTxt));
+        exit(BCXXMLHelper.TrimText(ResultTxt));
     end;
 
 }

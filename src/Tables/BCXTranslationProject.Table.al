@@ -123,37 +123,42 @@ table 78600 "BCX Translation Project"
 
     trigger OnInsert()
     var
-        TransSetup: Record "BCX Translation Setup";
+        BCXTranslationSetup: Record "BCX Translation Setup";
     begin
         "Created By" := CopyStr(UserId(), 1, MaxStrLen(("Created By")));
         "Creation Date" := Today();
-        TransSetup.Get();
+        BCXTranslationSetup.Get();
         if "Source Language" = '' then
-            Validate("Source Language", TransSetup."Default Source Language code");
+            Validate("Source Language", BCXTranslationSetup."Default Source Language code");
 
     end;
 
     trigger OnDelete()
     var
-        TargetBaseLanguage: Record "BCX Base Translation Target";
-        TargetLanguage: Record "BCX Target Language";
-        TranNote: Record "BCX Translation Notes";
-        TransSource: Record "BCX Translation Source";
-        TransTarget: Record "BCX Translation Target";
-        TransTerm: Record "BCX Translation Term";
+        BCXBaseTranslationTarget: Record "BCX Base Translation Target";
+        BCXTargetLanguage: Record "BCX Target Language";
+        BCXTranslationNote: Record "BCX Translation Note";
+        BCXTranslationSource: Record "BCX Translation Source";
+        BCXTranslationTarget: Record "BCX Translation Target";
+        BCXTranslationTerm: Record "BCX Translation Term";
     begin
-        TransSource.SetRange("Project Code", "Project Code");
-        TransSource.DeleteAll();
-        TransTarget.SetRange("Project Code", "Project Code");
-        TransTarget.DeleteAll();
-        TargetLanguage.SetRange("Project Code", "Project Code");
-        TargetLanguage.DeleteAll();
-        TargetBaseLanguage.SetRange("Project Code", "Project Code");
-        TargetBaseLanguage.DeleteAll();
-        TranNote.SetRange("Project Code", "Project Code");
-        TranNote.DeleteAll();
-        TransTerm.SetRange("Project Code", "Project Code");
-        TransTerm.DeleteAll();
+        BCXTranslationSource.SetRange("Project Code", "Project Code");
+        BCXTranslationSource.DeleteAll();
+
+        BCXTranslationTarget.SetRange("Project Code", "Project Code");
+        BCXTranslationTarget.DeleteAll();
+
+        BCXTargetLanguage.SetRange("Project Code", "Project Code");
+        BCXTargetLanguage.DeleteAll();
+
+        BCXBaseTranslationTarget.SetRange("Project Code", "Project Code");
+        BCXBaseTranslationTarget.DeleteAll();
+
+        BCXTranslationNote.SetRange("Project Code", "Project Code");
+        BCXTranslationNote.DeleteAll();
+
+        BCXTranslationTerm.SetRange("Project Code", "Project Code");
+        BCXTranslationTerm.DeleteAll();
     end;
 
 }
