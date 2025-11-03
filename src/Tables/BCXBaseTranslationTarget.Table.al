@@ -13,37 +13,31 @@ table 78610 "BCX Base Translation Target"
         field(10; "Project Code"; Code[20])
         {
             Caption = 'Project Code';
-            DataClassification = AccountData;
             Editable = false;
         }
         field(20; "Trans-Unit Id"; Text[250])
         {
             Caption = 'Trans-Unit Id';
-            DataClassification = AccountData;
             Editable = false;
         }
         field(30; "Target Language"; Code[10])
         {
             Caption = 'Target Language';
-            DataClassification = AccountData;
             Editable = false;
         }
         field(40; "Target Language ISO code"; Text[10])
         {
             Caption = 'Target Language ISO code';
-            DataClassification = AccountData;
             Editable = false;
         }
         field(50; Source; Text[2048])
         {
             Caption = 'Source';
-            DataClassification = AccountData;
             Editable = false;
         }
         field(60; Target; Text[2048])
         {
             Caption = 'Target';
-            DataClassification = AccountData;
 
             trigger OnValidate()
             begin
@@ -53,33 +47,27 @@ table 78610 "BCX Base Translation Target"
         field(70; Translate; Boolean)
         {
             Caption = 'Translate';
-            DataClassification = AccountData;
             InitValue = true;
         }
         field(80; "size-unit"; Text[10])
         {
             Caption = 'size-unit';
-            DataClassification = AccountData;
         }
         field(90; TranslateAttr; Text[10])
         {
             Caption = 'TranslateAttr';
-            DataClassification = AccountData;
         }
         field(100; "xml:space"; Text[10])
         {
             Caption = 'xml:space';
-            DataClassification = AccountData;
         }
         field(110; "Max Width"; Text[10])
         {
             Caption = 'Max Width';
-            DataClassification = AccountData;
         }
         field(120; "al-object-target"; Text[100])
         {
             Caption = 'al-object-target';
-            DataClassification = AccountData;
         }
         field(130; Occurrencies; Integer)
         {
@@ -90,7 +78,6 @@ table 78610 "BCX Base Translation Target"
         field(140; "Field Name"; Text[2048])
         {
             Caption = 'Field Name';
-            DataClassification = AccountData;
         }
 
     }

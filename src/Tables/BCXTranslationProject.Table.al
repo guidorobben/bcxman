@@ -9,7 +9,6 @@ table 78600 "BCX Translation Project"
         field(10; "Project Code"; Code[20])
         {
             Caption = 'Project Code';
-            DataClassification = SystemMetadata;
 
         }
         field(20; "Project Name"; Text[100])
@@ -77,25 +76,21 @@ table 78600 "BCX Translation Project"
         field(90; "File Name"; Text[250])
         {
             Caption = 'File Name';
-            DataClassification = SystemMetadata;
         }
         field(100; "No. Series"; Code[10])
         {
             Caption = 'No. Series';
-            DataClassification = SystemMetadata;
             Editable = false;
             TableRelation = "No. Series";
         }
         field(110; OrginalAttr; Text[100])
         {
             Caption = 'OrginalAttr';
-            DataClassification = SystemMetadata;
             Editable = false;
         }
         field(120; "NAV Version"; Option)
         {
             Caption = 'NAV Version';
-            DataClassification = SystemMetadata;
             InitValue = 1;
             OptionCaption = 'Dynamics 365 Business Central';
             OptionMembers = "Dynamics 365 Business Central";
@@ -103,7 +98,6 @@ table 78600 "BCX Translation Project"
         field(130; Status; Option)
         {
             Caption = 'Status';
-            DataClassification = SystemMetadata;
             OptionCaption = 'Open,Released,Closed';
             OptionMembers = Open,Released,Closed;
         }

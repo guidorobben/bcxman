@@ -59,7 +59,6 @@ table 78603 "BCX Target Language"
         field(50; "File Name"; Text[250])
         {
             Caption = 'File Name';
-            DataClassification = SystemMetadata;
         }
         field(60; "Equivalent Language"; Code[10])
         {

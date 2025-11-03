@@ -8,7 +8,6 @@ table 78609 "BCX Translation Cue"
         field(10; "Primary Key"; Code[10])
         {
             Caption = 'Primary Key';
-            DataClassification = ToBeClassified;
         }
         field(20; "Open Projects"; Integer)
         {
