@@ -139,9 +139,9 @@ codeunit 78602 "BCX GPT Translate Rest"
             Error('Failed to send request to OpenAI API.');
 
         if not Response.IsSuccessStatusCode() then
-            Error('OpenAI returned status %1: %2', Response.HttpStatusCode, Response.ReasonPhrase);
+            Error('OpenAI returned status %1: %2', Response.HttpStatusCode(), Response.ReasonPhrase());
 
-        Response.Content.ReadAs(ResponseText);
+        Response.Content().ReadAs(ResponseText);
         outTransText := CopyStr(ParseTranslatedText(ResponseText), 1, 2048); // Prevent overflow
         outTransText := UnprotectGlossaryTerms(outTransText);
     end;

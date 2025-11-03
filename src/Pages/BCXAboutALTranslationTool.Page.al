@@ -57,9 +57,9 @@ page 78609 "BCX About AL Translation Tool"
     trigger OnOpenPage()
     begin
         if NavApp.GetCurrentModuleInfo(AppModuleInfo) then begin
-            AppVersion := Format(AppModuleInfo.AppVersion);
-            AppName := AppModuleInfo.Name;
-            AppPublisher := AppModuleInfo.Publisher;
+            AppVersion := Format(AppModuleInfo.AppVersion());
+            AppName := AppModuleInfo.Name();
+            AppPublisher := AppModuleInfo.Publisher();
         end;
     end;
 }

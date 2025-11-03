@@ -1,5 +1,7 @@
 codeunit 78607 "BCX DeepL Translate"
 {
+    Access = Internal;
+
     procedure Translate(ProjectCode: Text[20]; inSourceLang: Text[10]; inTargetLang: Text[10]; inText: Text[2048]) outTransText: Text[2048]
     var
         Setup: Record "BCX Translation Setup";
@@ -72,11 +74,11 @@ codeunit 78607 "BCX DeepL Translate"
             Error('Failed to send request to DeepL API.');
 
         if not Response.IsSuccessStatusCode() then begin
-            Response.Content.ReadAs(ResponseText);
-            Error('DeepL returned status %1: %2 -- %3', Response.HttpStatusCode, Response.ReasonPhrase, ResponseText);
+            Response.Content().ReadAs(ResponseText);
+            Error('DeepL returned status %1: %2 -- %3', Response.HttpStatusCode(), Response.ReasonPhrase(), ResponseText);
         end;
 
-        Response.Content.ReadAs(ResponseText);
+        Response.Content().ReadAs(ResponseText);
 
         // Parse DeepL response and return first translated text
         outTransText := CopyStr(ParseDeepLResponse(ResponseText), 1, 2048);

@@ -132,7 +132,7 @@ table 78600 "BCX Translation Project"
         TransSetup: Record "BCX Translation Setup";
     begin
         "Created By" := CopyStr(UserId(), 1, MaxStrLen(("Created By")));
-        "Creation Date" := Today;
+        "Creation Date" := Today();
         TransSetup.Get();
         if "Source Language" = '' then
             Validate("Source Language", TransSetup."Default Source Language code");

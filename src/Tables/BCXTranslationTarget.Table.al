@@ -112,7 +112,7 @@ table 78602 "BCX Translation Target"
         TransTarget.Copy(Rec);
         TransTarget.SetRange(Source, Source);
         TransTarget.SetRange("Target Language", "Target Language");
-        Instances := TransTarget.Count;
+        Instances := TransTarget.Count();
         if Target = '' then
             exit;
         if Instances > 1 then begin

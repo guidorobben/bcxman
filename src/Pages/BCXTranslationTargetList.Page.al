@@ -191,7 +191,7 @@ page 78603 "BCX Translation Target List"
                     WarningTxt: Label 'Mark all untranslated lines to be translated?';
                 begin
                     CurrPage.SetSelectionFilter(TransTarget);
-                    if TransTarget.Count = 1 then
+                    if TransTarget.Count() = 1 then
                         TransTarget.Reset();
                     TransTarget.SetRange(Target, '');
                     if Confirm(WarningTxt) then
@@ -229,7 +229,7 @@ page 78603 "BCX Translation Target List"
                     WarningTxt: Label 'Remove mark from all lines and disable translation?';
                 begin
                     CurrPage.SetSelectionFilter(TransTarget);
-                    if TransTarget.Count = 1 then
+                    if TransTarget.Count() = 1 then
                         TransTarget.Reset();
                     if Confirm(WarningTxt) then
                         TransTarget.ModifyAll(Translate, false);
@@ -418,7 +418,7 @@ page 78603 "BCX Translation Target List"
         TransTarget.SetRange("Project Code", Project."Project Code");
         TransTarget.SetRange("Target Language ISO code", Rec."Target Language ISO code");
 
-        TotalCount := TransTarget.Count;
+        TotalCount := TransTarget.Count();
         Window.Open(DialogTxt);
 
         if TransTarget.FindSet() then
@@ -456,7 +456,7 @@ page 78603 "BCX Translation Target List"
         if (TargetLanguageIsoFilter <> '') then
             TransTarget.SetRange("Target Language ISO code", TargetLanguageIsoFilter);
 
-        TotalCount := TransTarget.Count;
+        TotalCount := TransTarget.Count();
         Window.Open(DialogTxt);
 
         TransTarget.SetCurrentKey(Source);

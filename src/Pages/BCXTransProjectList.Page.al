@@ -115,7 +115,7 @@ page 78600 "BCX Trans Project List"
                 begin
                     TransSource.SetRange("Project Code", Rec."Project Code");
                     TransNotes.SetRange("Project Code", Rec."Project Code");
-                    if not TransSource.IsEmpty then
+                    if not TransSource.IsEmpty() then
                         if Confirm(DeleteWarningTxt, false, Rec."Project Code") then begin
                             TransSource.DeleteAll();
                             TransNotes.DeleteAll();

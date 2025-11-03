@@ -150,7 +150,7 @@ xmlport 78601 "BCX Export Translation Target"
 
     procedure GetFilename(): Text
     begin
-        exit(currXMLport.Filename);
+        exit(currXMLport.Filename());
     end;
 
 

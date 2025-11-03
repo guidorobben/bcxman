@@ -45,7 +45,7 @@ page 78612 "BCX User Access"
         NoAccessTxt: Label 'No Access';
     begin
         UserAccess.SetRange("User Id", Rec."User Id");
-        if not UserAccess.IsEmpty then
+        if not UserAccess.IsEmpty() then
             Error(NoAccessTxt)
     end;
 }

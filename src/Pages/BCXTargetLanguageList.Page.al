@@ -266,7 +266,7 @@ page 78602 "BCX Target Language List"
                 begin
                     TransTarget.SetRange("Project Code", Rec."Project Code");
                     TransTarget.SetRange("Target Language ISO code", Rec."Target Language ISO code");
-                    if not TransTarget.IsEmpty then begin
+                    if not TransTarget.IsEmpty() then begin
                         if not Confirm(DeleteWarningTxt, false, Rec."Project Code", Rec."Target Language ISO code") then
                             exit;
                         TransTarget.DeleteAll();

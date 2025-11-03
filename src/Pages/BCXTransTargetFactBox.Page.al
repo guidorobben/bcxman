@@ -55,12 +55,12 @@ page 78605 "BCX Trans Target Factbox"
         Target: Record "BCX Translation Target";
     begin
         Target.SetRange("Project Code", Rec."Project Code");
-        TotalCaptions := Target.Count;
+        TotalCaptions := Target.Count();
         Target.SetRange(Source, '');
-        TotalMissingCaptions := Target.Count;
+        TotalMissingCaptions := Target.Count();
         Target.SetFilter(Source, '<>%1', '');
         Target.SetRange(Target, '');
-        TotalMissingTranslations := Target.Count;
+        TotalMissingTranslations := Target.Count();
     end;
 
     trigger OnAfterGetRecord()
@@ -68,7 +68,7 @@ page 78605 "BCX Trans Target Factbox"
         TransTarget: Record "BCX Translation Target";
     begin
         TransTarget.SetRange(Source, Rec.Source);
-        Instances := TransTarget.Count;
+        Instances := TransTarget.Count();
     end;
 
 }

@@ -42,31 +42,31 @@ codeunit 78604 "BCX Project Importer"
                 exit;
             TransSource.SetRange("Project Code", ProjectCode);
             if not TransSource.IsEmpty() then
-                TransSource.DeleteAll();
+                TransSource.DeleteAll(false);
 
             TransTarget.SetRange("Project Code", ProjectCode);
             if not TransTarget.IsEmpty() then
-                TransTarget.DeleteAll();
+                TransTarget.DeleteAll(false);
 
             TransTargetLanguage.SetRange("Project Code", ProjectCode);
             if not TransTargetLanguage.IsEmpty() then
-                TransTargetLanguage.DeleteAll();
+                TransTargetLanguage.DeleteAll(false);
 
             TransBaseTarget.SetRange("Project Code", ProjectCode);
             if not TransBaseTarget.IsEmpty() then
-                TransBaseTarget.DeleteAll();
+                TransBaseTarget.DeleteAll(false);
 
             TransNotes.SetRange("Project Code", ProjectCode);
             if not TransNotes.IsEmpty() then
-                TransNotes.DeleteAll();
+                TransNotes.DeleteAll(false);
 
             BaseNotes.SetRange("Project Code", ProjectCode);
             if not BaseNotes.IsEmpty() then
-                BaseNotes.DeleteAll();
+                BaseNotes.DeleteAll(false);
 
             TransTerm.SetRange("Project Code", ProjectCode);
             if not TransTerm.IsEmpty() then
-                TransTerm.DeleteAll();
+                TransTerm.DeleteAll(false);
         end;
 
         // Ask user for ZIP
